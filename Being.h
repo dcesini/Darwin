@@ -7,6 +7,10 @@
 #include "Commons.h"
 #include "Food.h"
 #include <iostream>
+#include <utility>
+#include <boost/optional.hpp>
+
+typedef std::pair<long unsigned int, long unsigned int> Parents;
 
 class being{
 
@@ -31,10 +35,9 @@ public:
       energy_(energy)    ,
       ALIVE_(ALIVE)      ,
       x_(x)              ,
-      y_(y)             
+      y_(y)              ,
+      prnts_(std::make_pair(pID1 , pID2))             
       { 
-      prnts_.set_ID1(pID1);
-      prnts_.set_ID2(pID2);
       N_beings++ ;
       } ;
 
@@ -50,7 +53,22 @@ public:
 
 
 
-   being();
+   being() :
+
+   energy_(starting_energy)      ,
+   ALIVE_(true)                  ,
+   x_(0.0)                       ,
+   y_(0.0)                       ,
+   prnts_(std::make_pair(0,0))        ,
+   ID_(N_beings)              
+   { 
+       chromo ch;
+       for (int ii = 0 ; ii < CHROMO_NUMBER; ++ii) {
+           mydna_.set_chromo(ch,ii);
+       };
+       N_beings++ ;
+
+   };
 
    long unsigned int get_N_beings() const;
    int get_id() const { return ID_; };
@@ -81,7 +99,7 @@ public:
 std::ostream& operator<<(std::ostream& os, const being& obj);
 
 being operator+(const being & lhs, const being& rhs);
-being* reproduce(const being& lhs, const being& rhs);
+boost::optional<being> reproduce(const being& lhs, const being& rhs);
 int get_compatibility(const being& lhs, const being& rhs);
 
 #endif

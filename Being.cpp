@@ -9,7 +9,7 @@
 #include <chrono>
 #include <algorithm>
 #include <cmath>
-
+#include <boost/optional.hpp>
 
 using namespace std;
 
@@ -18,21 +18,6 @@ long unsigned int being::N_beings = 0;
 unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 default_random_engine generator(seed);
 
-being::being() {
-   chromo ch;
-   for (int ii = 0 ; ii < CHROMO_NUMBER; ++ii) {
-      mydna_.set_chromo(ch,ii);
-   };
-   energy_ = starting_energy;
-   ALIVE_ = true;
-   x_ = 0.0;
-   y_ = 0.0;
-   prnts_.set_ID1(0); prnts_.set_ID2(0);
-   ID_ = N_beings;
-   N_beings++ ;
-};
-
-
 void being::show() const {
 
    cout << "ID = " << ID_ << endl;
@@ -40,7 +25,7 @@ void being::show() const {
    cout << "Age = " << age_ << endl;
    cout << "Energy = " << energy_ << endl;
    cout << "Position = " << "[" << x_ << "," << y_ << "]" << endl;
-   cout << "Parents ID = " << "[" << prnts_.get_ID1() << "," << prnts_.get_ID2() << "]" << endl;
+   cout << "Parents ID = " << "[" << prnts_.first << "," << prnts_.second << "]" << endl;
    cout << "DNA:" << endl;
    mydna_.show_dna(); 
 
@@ -57,7 +42,7 @@ ostream& operator<<(ostream& os, const being& obj) {
    os << "Age = " << obj.get_age() << endl;
    os << "Energy = " << obj.get_energy() << endl;
    os << "Position = " << "[" << obj.get_x() << "," << obj.get_y() << "]" << endl;
-   os << "Parents ID = " << "[" << obj.get_parents().get_ID1() << "," << obj.get_parents().get_ID2() << "]" << endl;
+   os << "Parents ID = " << "[" << obj.get_parents().first << "," << obj.get_parents().second << "]" << endl;
    os << "DNA:" << endl;
    os << obj.get_dna();
    
@@ -131,7 +116,7 @@ void being::eat(food_point& fp) {
          energy_ += delta_nutri ;
          fp.decrease_nutrival(delta_nutri) ;
          if (fp.get_nutrival() < 0.0) fp.set_nutrival(0.0) ;
-         if (VERBOSE) cout << "Being " << ID_ << " eat food for " << delta_nutri << " calories" << endl;
+         if (VERBOSE) cout << "Being " << ID_ << " eat food for " << delta_nutri << " calories" << "( " << dfp << ", " << get_dim() << " )" << endl;
       };
    };   
 
@@ -149,11 +134,11 @@ int get_compatibility(const being& lhs, const being& rhs) {
 };
 
 
-being* reproduce(const being& lhs, const being& rhs) {
+boost::optional<being> reproduce(const being& lhs, const being& rhs) {
 
    uniform_real_distribution<float> distribution_rep(0 , 1);
    bool VERBOSE = true;
-   being* new_being_ptr = NULL;
+   boost::optional<being> new_being;
   
    if (lhs.get_alive() && rhs.get_alive() ) {
       int const dbs = dist( lhs.get_pos() , rhs.get_pos() ) ;
@@ -163,7 +148,8 @@ being* reproduce(const being& lhs, const being& rhs) {
          float dice_roll = distribution_rep(generator);
          if (dice_roll < prepr) {
             if (VERBOSE) cout << "They were lucky, reproduction! ("  << dbs << "," << compat << "," << prepr << "," << dice_roll << ")" << endl;
-            new_being_ptr = new (nothrow) being(lhs + rhs) ;
+            // new_being_ptr = new (nothrow) being(lhs + rhs) ;
+            new_being = being(lhs + rhs);
          }
          else {
             if (VERBOSE) cout << "They were not lucky, no reproduction." << dbs << "," << compat << "," << prepr << "," << dice_roll << ")" << endl;
@@ -171,7 +157,7 @@ being* reproduce(const being& lhs, const being& rhs) {
       };
    };
    
-   return new_being_ptr;
+   return new_being ;
 };
 
 void being::mutation() {

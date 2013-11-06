@@ -70,9 +70,7 @@ int main() {
 
 
    b3.move();
-   cout << "B3 after move" << endl << b3;
-
-
+   cout << "B3 after move" << endl << b3 << endl;
 
    cout << "We have a total of " << b1.get_N_beings() << " beings" << endl;
 
@@ -94,11 +92,21 @@ int main() {
    food_list.push_back(fp3);
    for(it = food_list.begin(); it != food_list.end(); ++it)  it->show_food();
 
+   cout << "b1 eat:" << endl;
    b1.eat(fp2) ;
    cout << "FP2 : " << fp2 << endl;
 
-   being* b4_ptr = reproduce(b1,b2) ;
-   if(b4_ptr) (*b4_ptr).show();
+   //being* b4_ptr = reproduce(b1,b2) ;
+   //if(b4_ptr) (*b4_ptr).show();
+
+   boost::optional<being> b4 = reproduce(b1,b2);
+   if (b4) {
+      cout << "B4 : " << endl;
+      b4.get().show();
+   }
+   else {
+      cout << " NO B4" << endl;
+   };
 
 
    cout << "B3" << endl << b3 << endl;;
@@ -115,7 +123,11 @@ int main() {
    b3.die(true);
    cout << "B3 after second die" << endl << b3 << endl;
    
-
+   cout << "B1:" << endl << b1 << endl;
+   cout << "FP1:" << endl << fp1 << endl;
+   b1.eat(fp1);
+   cout << "B1:" << endl << b1 << endl;
+   cout << "FP1:" << endl << fp1 << endl;
 //   cout << "B4" << endl << b4 << endl;
 
  
