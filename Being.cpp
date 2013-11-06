@@ -94,8 +94,7 @@ ostream& operator<<(ostream& os, const being& obj) {
    os << "Position = " << "[" << obj.get_x() << "," << obj.get_y() << "]" << endl;
    os << "Parents ID = " << "[" << obj.get_parentID()[0] << "," << obj.get_parentID()[1] << "]" << endl;
    os << "DNA:" << endl;
-   DNA dna1 = obj.get_dna();
-   os << dna1;
+   os << obj.get_dna();
    
    return os;
 
@@ -104,8 +103,7 @@ ostream& operator<<(ostream& os, const being& obj) {
 
 being operator+(const being & lhs, const being& rhs) {
 
-   DNA new_dna;
-   new_dna = lhs.get_dna() + rhs.get_dna();
+   DNA new_dna = lhs.get_dna() + rhs.get_dna();
    uniform_real_distribution<float> distribution_x(lhs.get_x(),rhs.get_x());
    float dice_roll = distribution_x(generator);
    float new_x(dice_roll);
