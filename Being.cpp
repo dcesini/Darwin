@@ -18,25 +18,6 @@ long unsigned int being::N_beings = 0;
 unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 default_random_engine generator(seed);
 
-
-
-being::being(const DNA& dna1, int age_i, float energy_i, bool ALIVE_i, float x_i, float y_i, int pID1_i, int pID2_i) {
-
-   
-   ID_ = N_beings;
-   mydna_ = dna1;   
-   age_ = age_i;
-   energy_ = energy_i;
-   ALIVE_ = ALIVE_i;
-   x_ = x_i;
-   y_ = y_i;
-   parentID_[0] = pID1_i;
-   parentID_[1] = pID2_i;
-   N_beings++ ;
-
-   cout << "Created being with ID = " << ID_ << endl;
-};
-
 being::being() {
    chromo ch;
    for (int ii = 0 ; ii < CHROMO_NUMBER; ++ii) {
@@ -46,27 +27,11 @@ being::being() {
    ALIVE_ = true;
    x_ = 0.0;
    y_ = 0.0;
-   parentID_[0] = 0;
-   parentID_[1] = 0;
+   prnts_.set_ID1(0); prnts_.set_ID2(0);
    ID_ = N_beings;
    N_beings++ ;
 };
 
-being::being(const being& b0) {
-
-   
-   mydna_ = b0.get_dna();
-   age_ = b0.get_age();
-   energy_ = b0.get_energy();
-   ALIVE_ = b0.get_alive();
-   x_ = b0.get_x();
-   y_ = b0.get_y();
-   parentID_[0] = b0.get_parentID()[0];
-   parentID_[1] = b0.get_parentID()[1];
-   ID_ = N_beings;
-   N_beings++ ;
-
-};
 
 void being::show() const {
 
@@ -75,7 +40,7 @@ void being::show() const {
    cout << "Age = " << age_ << endl;
    cout << "Energy = " << energy_ << endl;
    cout << "Position = " << "[" << x_ << "," << y_ << "]" << endl;
-   cout << "Parents ID = " << "[" << parentID_[0] << "," << parentID_[1] << "]" <<endl;
+   cout << "Parents ID = " << "[" << prnts_.get_ID1() << "," << prnts_.get_ID2() << "]" << endl;
    cout << "DNA:" << endl;
    mydna_.show_dna(); 
 
@@ -92,7 +57,7 @@ ostream& operator<<(ostream& os, const being& obj) {
    os << "Age = " << obj.get_age() << endl;
    os << "Energy = " << obj.get_energy() << endl;
    os << "Position = " << "[" << obj.get_x() << "," << obj.get_y() << "]" << endl;
-   os << "Parents ID = " << "[" << obj.get_parentID()[0] << "," << obj.get_parentID()[1] << "]" << endl;
+   os << "Parents ID = " << "[" << obj.get_parents().get_ID1() << "," << obj.get_parents().get_ID2() << "]" << endl;
    os << "DNA:" << endl;
    os << obj.get_dna();
    

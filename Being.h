@@ -19,13 +19,37 @@ class being{
    bool ALIVE_;
    float x_;
    float y_;
-   int parentID_[2];
+   Parents prnts_;
 
 
 public:
  
-   being(const DNA& dna1, int age, float  energy, bool ALIVE, float x, float y, int pID1, int PID2);
-   being(const being& b0);
+   being(const DNA& dna1, int age, float  energy, bool ALIVE, float x, float y, long unsigned int pID1, long unsigned int pID2) :
+      ID_(N_beings)      ,
+      mydna_(dna1)       ,
+      age_(age)          ,
+      energy_(energy)    ,
+      ALIVE_(ALIVE)      ,
+      x_(x)              ,
+      y_(y)             
+      { 
+      prnts_.set_ID1(pID1);
+      prnts_.set_ID2(pID2);
+      N_beings++ ;
+      } ;
+
+   being(const being& b0) :
+      mydna_(b0.get_dna())       ,
+      age_(b0.get_age())         ,
+      energy_(b0.get_energy())   ,
+      ALIVE_(b0.get_alive())     ,
+      x_(b0.get_x())             , 
+      y_(b0.get_y())             ,
+      prnts_(b0.get_parents())   ,
+      ID_(N_beings)  {N_beings++ ;};
+
+
+
    being();
 
    long unsigned int get_N_beings() const;
@@ -37,7 +61,7 @@ public:
    float get_x() const { return x_; };
    float get_y() const { return y_; };
    point_2d get_pos() const { point_2d pos; pos.set_x(x_); pos.set_y(y_); return pos;};
-   const int* get_parentID() const { return parentID_; };
+   Parents get_parents() const { return prnts_; };
    DNA get_dna() const { return mydna_; };
    int get_charm()     const { return mydna_.get_chromo(0).sum_chromo(); };
    int get_beauty()    const { return mydna_.get_chromo(1).sum_chromo(); };

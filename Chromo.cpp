@@ -20,7 +20,6 @@ chromo::chromo(const chromo& c1) {
 
    for(int i = 0; i < DIM ; i++) ch_[i] = c1.get_base(i);
 
-
 };
 
 

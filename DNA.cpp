@@ -10,24 +10,7 @@ using namespace std;
 DNA::DNA(){
 
    chromo a;
-   dn_[0] = a;
-   dn_[1] = a;
-   dn_[2] = a;
-   dn_[3] = a;
-   dn_[4] = a;
-   dn_[5] = a;
-
-
-};
- 
-DNA::DNA(chromo const & charm_i, chromo const & beauty_i, chromo const & dim_i, chromo const & athlet_i, chromo const & karma_i, chromo const & attracted_i) {
-
-   dn_[0] = charm_i;
-   dn_[1] = beauty_i;
-   dn_[2] = dim_i;
-   dn_[3] = athlet_i;
-   dn_[4] = karma_i;
-   dn_[5] = attracted_i;
+   for (int ii = 0; ii < CHROMO_NUMBER; ++ii)  dn_[ii] = a ;
 
 };
 
@@ -37,6 +20,7 @@ DNA::DNA(const DNA& d1) {
 
 };
  
+
 chromo DNA::get_chromo(int i) const {
 
    return dn_[i];

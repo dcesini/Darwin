@@ -18,6 +18,23 @@ class point_2d{
      
 };
 
+class Parents {
+   long unsigned int  ID1_;
+   long unsigned int  ID2_;
+   public:
+      Parents(long unsigned int& a, long unsigned int& b)
+         : ID1_(a) ,
+           ID2_(b) {};
+      Parents() {ID1_ = 0; ID2_ = 0;};
+      Parents(const Parents& p0) : ID1_(p0.ID1_) , ID2_(p0.ID2_) {} ;
+      void set_ID1(long unsigned int a)  { ID1_ = a; };
+      void set_ID2(long unsigned int b)  { ID2_ = b; };
+      long unsigned int get_ID1() const { return ID1_; };
+      long unsigned int get_ID2() const { return ID2_; };
+      void show_parents() const;
+
+};
+
 float dist( point_2d const& p1 , point_2d const& p2);
 
 #endif

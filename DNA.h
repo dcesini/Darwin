@@ -12,7 +12,8 @@ class DNA {
    public:
 
       DNA();
-      DNA(chromo const& charm_i, chromo const& beauty_i, chromo const& dim_i, chromo const& athlet_i, chromo const& karma_i, chromo const& attracted_i);
+      DNA(chromo const& charm_i, chromo const& beauty_i, chromo const& dim_i, chromo const& athlet_i, chromo const& karma_i, chromo const& attracted_i) :
+         dn_ { charm_i , beauty_i ,dim_i , athlet_i , karma_i , attracted_i}  {};
 
       DNA(const DNA& d1);
 

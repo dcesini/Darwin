@@ -12,12 +12,27 @@ class food_point {
 
    public:
 
-      food_point(float x, float y);
-      food_point(float x, float y, float nutri);
+      food_point(float x, float y):
+         pos_(x,y) ,
+         nutrival_(default_nutrival) {};
+
+      food_point(float x, float y, float nutri) :
+         pos_(x,y) ,
+         nutrival_(nutri) {};
+
       food_point(const point_2d& p)
-         : pos_(p) {}; 
-      food_point();
-      food_point(const food_point& other);
+         : pos_(p) , nutrival_(default_nutrival) {}; 
+
+      food_point(const point_2d& p , float nutri)
+         : pos_(p) , nutrival_(nutri) {};
+
+      food_point()
+         : pos_(0.0,0.0) , nutrival_(default_nutrival) {};
+
+      food_point(const food_point& other)
+         : pos_(other.pos_) , nutrival_(other.nutrival_) {};
+
+
       point_2d get_pos() const ;
       float get_nutrival() const ;
       void set_nutrival(float val) ;
