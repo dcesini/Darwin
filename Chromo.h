@@ -4,8 +4,6 @@
 #include "Constants.h"
 #include <iostream>
 
-using namespace std;
-
 class chromo {
 
     short int ch_[DIM];
@@ -23,7 +21,7 @@ class chromo {
        int sum_chromo() const;
 };
 
-ostream& operator<<(ostream& os, const chromo& obj);
+std::ostream& operator<<( std::ostream& os, const chromo& obj);
 
 chromo chromo_mix(chromo const& lhs, chromo const& rhs);
 

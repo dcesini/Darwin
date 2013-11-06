@@ -1,7 +1,6 @@
 #ifndef DARWIN_CONSTANTS_H
 #define DARWIN_CONSTANTS_H
 #include <string>
-using namespace std;
 
 const char fout_name[] = "./OUTPUT/darwin.out.";
 const char food_file[] = "food.txt";
@@ -57,7 +56,7 @@ const float epsdim = 0.5;
 const float max_move_1d = 10.0;
 const float epsener = 0.1;
 const float epsener2 = 0.8;
-const string pmov_distr = "UNIFORM";
+const std::string pmov_distr = "UNIFORM";
 
 // EAT CONSTANTS
 const float epsnutri = 0.3;
@@ -70,12 +69,12 @@ const float epsage = 0.9;
 
 // REPRODUCTION CONSTANTS
 const float epsrepr = 0.5;
-const string REPRODUCTION_METHOD = "SEGMENTS_EXCHANGE";
+const std::string REPRODUCTION_METHOD = "SEGMENTS_EXCHANGE";
 
 // MUTATION CONSTANTS
 
 const float pmut = 0.1;  // probability that a chromosome is mutated
-const string muted_gene_selection = "UNIFORM";
-const string chromo_affected = "ALL";
+const std::string muted_gene_selection = "UNIFORM";
+const std::string chromo_affected = "ALL";
 
 #endif

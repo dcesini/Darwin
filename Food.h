@@ -5,8 +5,6 @@
 #include "Commons.h"
 #include <iostream>
 
-using namespace std;
-
 class food_point {
 
    point_2d pos_;
@@ -28,5 +26,5 @@ class food_point {
 
 };
 
-ostream& operator<<(ostream& os, const food_point& obj);
+std::ostream& operator<<(std::ostream& os, const food_point& obj);
 #endif

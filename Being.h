@@ -47,7 +47,6 @@ public:
    int get_attracted() const { return mydna_.get_chromo(5).sum_chromo(); };
    void show() const;
    void move();
-   void move(float const& deltax, float const& deltay);
    void mutation();
    void eat(food_point& fp);
    void die(bool force_death = false);
@@ -55,7 +54,7 @@ public:
 
 }; 
 
-ostream& operator<<(ostream& os, const being& obj);
+std::ostream& operator<<(std::ostream& os, const being& obj);
 
 being operator+(const being & lhs, const being& rhs);
 being* reproduce(const being& lhs, const being& rhs);

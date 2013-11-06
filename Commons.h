@@ -18,6 +18,6 @@ class point_2d{
      
 };
 
-float dist(point_2d p1 , point_2d p2);
+float dist( point_2d const& p1 , point_2d const& p2);
 
 #endif

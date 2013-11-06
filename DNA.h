@@ -5,8 +5,6 @@
 #include "Chromo.h"
 #include <iostream>
 
-using namespace std;
-
 class DNA {
 
    chromo dn_[CHROMO_NUMBER];
@@ -25,6 +23,6 @@ class DNA {
 
 };
 
-ostream& operator<<(ostream& os, const DNA & obj);
+std::ostream& operator<<(std::ostream& os, const DNA & obj);
 DNA operator+(const DNA& lhs, const DNA& rhs);
 #endif

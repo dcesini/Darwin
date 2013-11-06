@@ -105,11 +105,11 @@ being operator+(const being & lhs, const being& rhs) {
 
    DNA new_dna = lhs.get_dna() + rhs.get_dna();
    uniform_real_distribution<float> distribution_x(lhs.get_x(),rhs.get_x());
-   float dice_roll = distribution_x(generator);
-   float new_x(dice_roll);
+   float dice_roll_x = distribution_x(generator);
+   float new_x(dice_roll_x);
    uniform_real_distribution<float> distribution_y(lhs.get_y(),rhs.get_y());
-   dice_roll = distribution_y(generator);
-   float new_y(dice_roll);
+   float dice_roll_y = distribution_y(generator);
+   float new_y(dice_roll_y);
    being new_being(new_dna, 0 , starting_energy, true, new_x, new_y, lhs.get_id(), rhs.get_id());
    return new_being;
 };
@@ -131,11 +131,11 @@ void being::move() {
          //pmov_y = float(-1200.0);
       };
  
-      float resistance = get_dim() * epsdim; 
+      float const resistance = get_dim() * epsdim; 
       float delta_x = pmov_x * max( epsath * get_athlet() - resistance, float(0.0) ) ;
       float delta_y = pmov_y * max( epsath * get_athlet() - resistance, float(0.0) ) ;
-      x_ = x_ + delta_x ;
-      y_ = y_ + delta_y ;
+      x_ += delta_x ;
+      y_ += delta_y ;
       if (x_ > X_MAX)  x_ = X_MIN + fmod( x_ , (X_MAX - X_MIN) ) ;
       if (x_ < X_MIN)  x_ = X_MAX - fmod( abs(x_) , (X_MAX - X_MIN) ) ;
       if (y_ > Y_MAX)  y_ = Y_MIN + fmod( y_ , (Y_MAX - Y_MIN) ) ;
@@ -157,14 +157,13 @@ void being::move() {
 
 void being::eat(food_point& fp) {
 
-   float dfp, delta_nutri;
    bool VERBOSE = true;
 
    if (ALIVE_) {
-      dfp = dist( get_pos() , fp.get_pos() ) ;
+      float const dfp = dist( get_pos() , fp.get_pos() ) ;
       if ( float(get_dim()) >= dfp && fp.get_nutrival() > 0.0 ) {
-         delta_nutri = epsnutri * fp.get_nutrival() ;  
-         energy_ = energy_ + delta_nutri ;
+         float const delta_nutri = epsnutri * fp.get_nutrival() ;  
+         energy_ += delta_nutri ;
          fp.decrease_nutrival(delta_nutri) ;
          if (fp.get_nutrival() < 0.0) fp.set_nutrival(0.0) ;
          if (VERBOSE) cout << "Being " << ID_ << " eat food for " << delta_nutri << " calories" << endl;
@@ -178,7 +177,7 @@ int get_compatibility(const being& lhs, const being& rhs) {
    chromo l_beauty( lhs.get_dna().get_chromo(1) );
    chromo r_attracted( rhs.get_dna().get_chromo(5) );
    for (int ii = 0; ii < DIM; ++ii) {
-      if (l_beauty.get_base(ii) !=  r_attracted.get_base(ii)) compat = compat + 1 ;
+      if (l_beauty.get_base(ii) !=  r_attracted.get_base(ii)) ++compat ;
    };
 
    return compat;
@@ -186,19 +185,17 @@ int get_compatibility(const being& lhs, const being& rhs) {
 
 
 being* reproduce(const being& lhs, const being& rhs) {
-   
-   float dbs, prepr, dice_roll;
-   int compat;
+
    uniform_real_distribution<float> distribution_rep(0 , 1);
    bool VERBOSE = true;
    being* new_being_ptr = NULL;
   
    if (lhs.get_alive() && rhs.get_alive() ) {
-      dbs = dist( lhs.get_pos() , rhs.get_pos() ) ;
+      int const dbs = dist( lhs.get_pos() , rhs.get_pos() ) ;
       if (dbs < float( lhs.get_dim() + rhs.get_dim() ) ) {
-         compat = get_compatibility(lhs,rhs);
-         prepr = epsrepr * ( float(compat) / float( lhs.get_beauty() ) ) ;
-         dice_roll = distribution_rep(generator);
+         int const compat = get_compatibility(lhs,rhs);
+         float prepr = epsrepr * ( float(compat) / float( lhs.get_beauty() ) ) ;
+         float dice_roll = distribution_rep(generator);
          if (dice_roll < prepr) {
             if (VERBOSE) cout << "They were lucky, reproduction! ("  << dbs << "," << compat << "," << prepr << "," << dice_roll << ")" << endl;
             new_being_ptr = new (nothrow) being(lhs + rhs) ;
@@ -216,17 +213,16 @@ void being::mutation() {
 
    uniform_real_distribution<float> distribution_mut(0 , 1);
    uniform_int_distribution<int> distribution_gene(0 , DIM - 1);
-   int newval = 0, ngene = 0;
+   int newval = 0;
    bool VERBOSE = true;
-   float dice_roll = 1.0;
 
    if (ALIVE_) {
       if (chromo_affected == "ALL") {
          for (int ii=0; ii<CHROMO_NUMBER; ++ii) {
-            dice_roll = distribution_mut(generator);
+            float dice_roll = distribution_mut(generator);
             if (dice_roll < pmut) {
                if( muted_gene_selection == "UNIFORM") {
-               ngene = distribution_gene(generator);
+               int const ngene = distribution_gene(generator);
                if (mydna_.get_chromo(ii).get_base(ngene) == 0) newval = 1;
                else newval = 0;
                chromo newchromo(mydna_.get_chromo(ii));
@@ -250,8 +246,7 @@ void being::older(int n_old) {
 void being::die(bool force_death) {
 
    bool VERBOSE = true;
-   float life_dice;
-   float pdie;
+   float pdie = 0.0;
 
    uniform_real_distribution<float> distribution_life(0 , 1);
 
@@ -265,7 +260,7 @@ void being::die(bool force_death) {
    if (ALIVE_){
 
 
-      life_dice = distribution_life(generator);
+      float life_dice = distribution_life(generator);
       if (age_ <= PROBABLE_AGE_LIMIT) pdie = epsage * (age_ / PROBABLE_AGE_LIMIT);
       else pdie = 1 - (epsage / (age_ - PROBABLE_AGE_LIMIT) );
       if (life_dice < pdie) {
