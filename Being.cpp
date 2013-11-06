@@ -217,7 +217,7 @@ being* reproduce(const being& lhs, const being& rhs) {
 void being::mutation() {
 
    uniform_real_distribution<float> distribution_mut(0 , 1);
-   uniform_int_distribution<int> distribution_gene(0 , DIM);
+   uniform_int_distribution<int> distribution_gene(0 , DIM - 1);
    int newval = 0, ngene = 0;
    bool VERBOSE = true;
    float dice_roll = 1.0;
@@ -238,6 +238,44 @@ void being::mutation() {
                };
             };
          };
+      };
+   };
+};
+
+
+void being::older(int n_old) {
+
+   age_ = age_ + n_old;
+
+};
+
+void being::die(bool force_death) {
+
+   bool VERBOSE = true;
+   float life_dice;
+   float pdie;
+
+   uniform_real_distribution<float> distribution_life(0 , 1);
+
+   if (ALIVE_ && force_death) ALIVE_ = false;
+
+   if (ALIVE_ && energy_ < 0.0) {
+      ALIVE_ = false;
+      if (VERBOSE) cout << "Being " << get_id() << " died at age = " << get_age()  << "( energy = " << get_energy() << " )" << endl;
+   };
+
+   if (ALIVE_){
+
+
+      life_dice = distribution_life(generator);
+      if (age_ <= PROBABLE_AGE_LIMIT) pdie = epsage * (age_ / PROBABLE_AGE_LIMIT);
+      else pdie = 1 - (epsage / (age_ - PROBABLE_AGE_LIMIT) );
+      if (life_dice < pdie) {
+         ALIVE_ = false;
+         if (VERBOSE) cout << "Being " << get_id() << " died at age = " << get_age()  << "( " << pdie << "," << life_dice << " )" << endl;
+      }
+      else {
+         if (VERBOSE) cout << "Being " << get_id() << " survived at age = " << get_age()  << "( " << pdie << "," << life_dice << " )" << endl;
       };
    };
 };

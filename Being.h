@@ -32,6 +32,7 @@ public:
    int get_id() const { return ID_; };
    int get_age() const { return age_; };
    float get_energy() const { return energy_; };
+   void set_energy(float new_energy) { energy_ = new_energy; };
    bool get_alive() const { return ALIVE_; };
    float get_x() const { return x_; };
    float get_y() const { return y_; };
@@ -49,7 +50,7 @@ public:
    void move(float const& deltax, float const& deltay);
    void mutation();
    void eat(food_point& fp);
-   void die();
+   void die(bool force_death = false);
    void older(int n_old = 1);
 
 }; 

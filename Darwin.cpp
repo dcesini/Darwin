@@ -104,7 +104,17 @@ int main() {
    cout << "B3" << endl << b3 << endl;;
    b3.mutation();
    cout << "B3 after mutation" << endl << b3 << endl;
+   b3.older();
+   cout << "B3 after older default" << endl << b3 << endl;
+   b3.older(5);
+   cout << "B3 after older 5" << endl << b3 << endl;
+   b3.die();
 
+   b3.set_energy(-1.0);
+   b3.die();
+   b3.die(true);
+   cout << "B3 after second die" << endl << b3 << endl;
+   
 
 //   cout << "B4" << endl << b4 << endl;
 

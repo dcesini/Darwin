@@ -32,7 +32,7 @@ void chromo::set_base(int pos, short int val) {
    }   
    else
    {
-      cout << "Error(chromo::set_pos): pos outside limits";
+      cout << "Error(chromo::set_base): pos outside limits";
    }
 };
 
