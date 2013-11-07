@@ -45,7 +45,7 @@ public:
       mydna_(b0.get_dna())       ,
       age_(b0.get_age())         ,
       energy_(b0.get_energy())   ,
-      ALIVE_(b0.get_alive())     ,
+      ALIVE_(b0.is_alive())     ,
       x_(b0.get_x())             , 
       y_(b0.get_y())             ,
       prnts_(b0.get_parents())   ,
@@ -75,7 +75,7 @@ public:
    int get_age() const { return age_; };
    float get_energy() const { return energy_; };
    void set_energy(float new_energy) { energy_ = new_energy; };
-   bool get_alive() const { return ALIVE_; };
+   bool is_alive() const { return ALIVE_; };
    float get_x() const { return x_; };
    float get_y() const { return y_; };
    point_2d get_pos() const { point_2d pos; pos.set_x(x_); pos.set_y(y_); return pos;};
@@ -101,5 +101,10 @@ std::ostream& operator<<(std::ostream& os, const being& obj);
 being operator+(const being & lhs, const being& rhs);
 boost::optional<being> reproduce(const being& lhs, const being& rhs);
 int get_compatibility(const being& lhs, const being& rhs);
+bool are_alive(const being& lhs, const being& rhs); 
+ 
+bool are_close_enough(const being& lhs, const being& rhs);
+bool are_compatible(const being& lhs, const being& rhs);
+
 
 #endif

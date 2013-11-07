@@ -38,7 +38,7 @@ long unsigned int being::get_N_beings() const {
 
 ostream& operator<<(ostream& os, const being& obj) {
    os << "ID = " << obj.get_id() << endl;
-   os << "Alive = " << obj.get_alive() << endl;
+   os << "Alive = " << obj.is_alive() << endl;
    os << "Age = " << obj.get_age() << endl;
    os << "Energy = " << obj.get_energy() << endl;
    os << "Position = " << "[" << obj.get_x() << "," << obj.get_y() << "]" << endl;
@@ -55,11 +55,9 @@ being operator+(const being & lhs, const being& rhs) {
 
    DNA new_dna = lhs.get_dna() + rhs.get_dna();
    uniform_real_distribution<float> distribution_x(lhs.get_x(),rhs.get_x());
-   float dice_roll_x = distribution_x(generator);
-   float new_x(dice_roll_x);
+   float const new_x( distribution_x(generator) );
    uniform_real_distribution<float> distribution_y(lhs.get_y(),rhs.get_y());
-   float dice_roll_y = distribution_y(generator);
-   float new_y(dice_roll_y);
+   float new_y( distribution_y(generator) );
    being new_being(new_dna, 0 , starting_energy, true, new_x, new_y, lhs.get_id(), rhs.get_id());
    return new_being;
 };
@@ -133,33 +131,51 @@ int get_compatibility(const being& lhs, const being& rhs) {
    return compat;
 };
 
+bool are_alive(const being& lhs, const being& rhs) {
+   if (lhs.is_alive() && rhs.is_alive()) {
+      return true;
+   }
+   else {
+      return false;
+   };
+};
+
+bool are_close_enough(const being& lhs, const being& rhs) {
+   
+   int const dbs = dist( lhs.get_pos() , rhs.get_pos() ) ;
+   if (dbs < float( lhs.get_dim() + rhs.get_dim() ) ) 
+   { return true; }
+   else
+   { return false; }
+
+};
+
+bool are_compatible(const being& lhs, const being& rhs) {
+
+   uniform_real_distribution<float> distribution_rep(0 , 1);
+   int const compat = get_compatibility(lhs,rhs);
+   float prepr = epsrepr * ( float(compat) / float( lhs.get_beauty() ) ) ;
+   float dice_roll = distribution_rep(generator);
+   if (dice_roll < prepr) return true;
+   else return false;
+
+};
 
 boost::optional<being> reproduce(const being& lhs, const being& rhs) {
 
-   uniform_real_distribution<float> distribution_rep(0 , 1);
    bool VERBOSE = true;
    boost::optional<being> new_being;
-  
-   if (lhs.get_alive() && rhs.get_alive() ) {
-      int const dbs = dist( lhs.get_pos() , rhs.get_pos() ) ;
-      if (dbs < float( lhs.get_dim() + rhs.get_dim() ) ) {
-         int const compat = get_compatibility(lhs,rhs);
-         float prepr = epsrepr * ( float(compat) / float( lhs.get_beauty() ) ) ;
-         float dice_roll = distribution_rep(generator);
-         if (dice_roll < prepr) {
-            if (VERBOSE) cout << "They were lucky, reproduction! ("  << dbs << "," << compat << "," << prepr << "," << dice_roll << ")" << endl;
-            // new_being_ptr = new (nothrow) being(lhs + rhs) ;
-            new_being = being(lhs + rhs);
-         }
-         else {
-            if (VERBOSE) cout << "They were not lucky, no reproduction." << dbs << "," << compat << "," << prepr << "," << dice_roll << ")" << endl;
-         }        
-      };
-   };
-   
+ 
+   if ( are_alive(lhs,rhs) && are_close_enough(lhs,rhs) && are_compatible(lhs,rhs) ) { 
+      if (VERBOSE) cout << "They were lucky, reproduction!" << endl;
+      new_being = being(lhs + rhs);
+   }
+   else {
+         if (VERBOSE) cout << "They were not lucky, no reproduction." << endl;
+   };        
    return new_being ;
 };
-
+   
 void being::mutation() {
 
    uniform_real_distribution<float> distribution_mut(0 , 1);

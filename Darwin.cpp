@@ -101,8 +101,8 @@ int main() {
 
    boost::optional<being> b4 = reproduce(b1,b2);
    if (b4) {
-      cout << "B4 : " << endl;
-      b4.get().show();
+      cout << "B4 : " << b4.get() << endl;
+      //b4.get().show();
    }
    else {
       cout << " NO B4" << endl;
