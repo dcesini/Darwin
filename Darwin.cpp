@@ -11,6 +11,13 @@ using namespace std;
 
 int main() {
 
+
+
+   cout << "sizeof(long int) = " << sizeof(long int) << endl;
+   cout << "sizeof(int) = " << sizeof(int) << endl;
+   cout << "sizeof(int64) = " << sizeof(int64_t) << endl;
+
+
    cout << "X_MIN = " << X_MIN << endl;
    cout << "X_MAX = " << X_MAX << endl;
    cout << "Y_MIN = " << Y_MIN << endl;

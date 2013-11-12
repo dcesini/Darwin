@@ -10,11 +10,11 @@
 #include <utility>
 #include <boost/optional.hpp>
 
-typedef std::pair<long unsigned int, long unsigned int> Parents;
+typedef std::pair<int64_t, int64_t> Parents;
 
 class being{
 
-   static long unsigned int N_beings;
+   static int64_t N_beings;
 
    int ID_;
    DNA mydna_;
@@ -28,7 +28,7 @@ class being{
 
 public:
  
-   being(const DNA& dna1, int age, float  energy, bool ALIVE, float x, float y, long unsigned int pID1, long unsigned int pID2) :
+   being(const DNA& dna1, int age, float  energy, bool ALIVE, float x, float y, int64_t pID1, int64_t pID2) :
       ID_(N_beings)      ,
       mydna_(dna1)       ,
       age_(age)          ,
@@ -70,7 +70,7 @@ public:
 
    };
 
-   long unsigned int get_N_beings() const;
+   int64_t get_N_beings() const;
    int get_id() const { return ID_; };
    int get_age() const { return age_; };
    float get_energy() const { return energy_; };
@@ -106,5 +106,5 @@ bool are_alive(const being& lhs, const being& rhs);
 bool are_close_enough(const being& lhs, const being& rhs);
 bool are_compatible(const being& lhs, const being& rhs);
 
-
+float dist(const being& lhs, const being& rhs); 
 #endif

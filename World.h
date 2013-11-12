@@ -14,45 +14,40 @@ class world {
 
    std::vector<food_point> food_;
    std_vector<being>       creatures_;
-   long unsigned int N_generation_ ;
+   int64_t N_generation_ ;
 
    public:
 
-   world(long unsigned int N_being_init, int N_food_point_init);
+   world(int64_t N_being_init, int N_food_point_init);
 
-   void create_food(long unsigned int N_food_point);
-   void create_population(long unsigned int N_being);
+   void create_food(int64_t N_food_point);
+   void create_population(int64_t N_being);
    
-   void load_food(std::string filename);
-   void load_population(std::string filename);
-   void save_food(std::string filename);
-   void save_population(std::string filename);
-   void save(std::string filename);
-   void load(std::string filename);
+   void load_food(std::string const& filename);
+   void load_population(std::string const& filename);
+   void save_food(std::string const& filename);
+   void save_population(std::string const& filename);
+   void save(std::string const& filename);
+   void load(std::string const& filename);
 
-   void add_being(const being& new_b);
+   void add(const being& new_b);
    void remove_being();
-   void add_food_point(const food_point& new_fp);
+   void add(const food_point& new_fp);
 
    void advance_one_generation(bool dump_to_file = false);
-   void evolve(long unsigned int N_generations);
+   void evolve(int64_t N_generations);
 
-   const std_vector<being> creatures() { return creatures_; };
+   std_vector<being> creatures() { return creatures_; };
    const std_vector<food_point> food() { return food_; };
 
-   long unsigned int age();
-   long unsigned int N_beings();
-   long unsigned int N_alive();
+   int64_t age();
+   int64_t N_beings();
+   int64_t N_alive();
    float total_energy();
-   long unsigned int N_food();
+   int64_t N_food();
    void stats();
 
 };
-
-
-
-
-
 
 
 #endif

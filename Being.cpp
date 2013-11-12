@@ -13,7 +13,7 @@
 
 using namespace std;
 
-long unsigned int being::N_beings = 0;
+int64_t being::N_beings = 0;
 
 unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 default_random_engine generator(seed);
@@ -31,7 +31,7 @@ void being::show() const {
 
 };
 
-long unsigned int being::get_N_beings() const {
+   int64_t being::get_N_beings() const {
    return N_beings;
 };
 
@@ -132,21 +132,21 @@ int get_compatibility(const being& lhs, const being& rhs) {
 };
 
 bool are_alive(const being& lhs, const being& rhs) {
-   if (lhs.is_alive() && rhs.is_alive()) {
-      return true;
-   }
-   else {
-      return false;
-   };
+
+   return (lhs.is_alive() && rhs.is_alive());
+
 };
+
+float dist(const being& lhs, const being& rhs) { 
+
+return dist( lhs.get_pos() , rhs.get_pos() ) ; 
+
+};
+
 
 bool are_close_enough(const being& lhs, const being& rhs) {
    
-   int const dbs = dist( lhs.get_pos() , rhs.get_pos() ) ;
-   if (dbs < float( lhs.get_dim() + rhs.get_dim() ) ) 
-   { return true; }
-   else
-   { return false; }
+   return dist(lhs,rhs) < float( lhs.get_dim() + rhs.get_dim() );
 
 };
 
@@ -156,8 +156,8 @@ bool are_compatible(const being& lhs, const being& rhs) {
    int const compat = get_compatibility(lhs,rhs);
    float prepr = epsrepr * ( float(compat) / float( lhs.get_beauty() ) ) ;
    float dice_roll = distribution_rep(generator);
-   if (dice_roll < prepr) return true;
-   else return false;
+
+   return distribution_rep(generator) < prepr;
 
 };
 
