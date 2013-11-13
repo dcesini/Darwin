@@ -5,6 +5,7 @@
 #include "Chromo.h"
 #include "Food.h"
 #include "DNA.h"
+#include "World.h"
 #include <vector>
 
 using namespace std;

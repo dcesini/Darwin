@@ -9,20 +9,28 @@
 #include "Food.h"
 #include "Constants.h"
 #include "Chromo.h"
+#include <boost/optional.hpp>
 
 class world {
 
    std::vector<food_point> food_;
-   std_vector<being>       creatures_;
+   std::vector<being>      creatures_;
    int64_t N_generation_ ;
 
    public:
 
    world(int64_t N_being_init, int N_food_point_init);
 
-   void create_food(int64_t N_food_point);
-   void create_population(int64_t N_being);
+//   void create_food(int64_t N_food_point);
+//   void create_population(int64_t N_being);
    
+   std::vector<being>::iterator first_b()  { return creatures_.begin(); };
+   std::vector<being>::iterator last_b()   { return creatures_.end(); };
+   std::vector<food_point>::iterator first_fp() { return food_.begin(); };
+   std::vector<food_point>::iterator last_fp()  { return food_.end(); };
+ 
+
+
    void load_food(std::string const& filename);
    void load_population(std::string const& filename);
    void save_food(std::string const& filename);
@@ -30,21 +38,23 @@ class world {
    void save(std::string const& filename);
    void load(std::string const& filename);
 
-   void add(const being& new_b);
+   void add(being const& new_b);
+   void add(boost::optional<being> const& new_b);
    void remove_being();
    void add(const food_point& new_fp);
 
    void advance_one_generation(bool dump_to_file = false);
    void evolve(int64_t N_generations);
 
-   std_vector<being> creatures() { return creatures_; };
-   const std_vector<food_point> food() { return food_; };
+   std::vector<being> creatures() { return creatures_; };
+   const std::vector<food_point> food() { return food_; };
 
-   int64_t age();
-   int64_t N_beings();
+   int64_t age() { return N_generation_; };
+   int64_t N_beings() { return creatures_.size(); } ;
    int64_t N_alive();
    float total_energy();
-   int64_t N_food();
+   float total_nutrival();
+   int64_t N_food() { return food_.size(); };
    void stats();
 
 };
