@@ -51,7 +51,7 @@ public:
       prnts_(b0.get_parents())   ,
       ID_(N_beings)  {N_beings++ ;};
 
-
+   being(boost::optional<being> b0);
 
    being() :
 

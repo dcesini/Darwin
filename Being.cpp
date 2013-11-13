@@ -18,6 +18,24 @@ int64_t being::N_beings = 0;
 unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 default_random_engine generator(seed);
 
+
+being::being(boost::optional<being> b0) {
+
+   if (b0) {
+
+      mydna_    = b0->get_dna();
+      age_      = b0->get_age();
+      energy_   = b0->get_energy();
+      ALIVE_    = b0->is_alive();
+      x_        = b0->get_x();
+      y_        = b0->get_y();
+      prnts_    = b0->get_parents();
+      ID_       = b0->get_id();
+   };
+
+   
+};
+
 void being::show() const {
 
    cout << "ID = " << ID_ << endl;
