@@ -26,13 +26,13 @@ class world {
    
    std::vector<being>::iterator beings_begin()  { return creatures_.begin(); };
    std::vector<being>::iterator beings_end()   { return creatures_.end(); };
-   std::vector<food_point>::iterator fp_begin() { return food_.begin(); };
-   std::vector<food_point>::iterator fp_end()  { return food_.end(); };
+   std::vector<food_point>::iterator food_begin() { return food_.begin(); };
+   std::vector<food_point>::iterator food_end()  { return food_.end(); };
 
    std::vector<being>::const_iterator beings_begin()  const { return creatures_.begin(); };
    std::vector<being>::const_iterator beings_end() const  { return creatures_.end(); };
-   std::vector<food_point>::const_iterator fb_begin() const { return food_.begin(); };
-   std::vector<food_point>::const_iterator fp_end()  const { return food_.end(); };
+   std::vector<food_point>::const_iterator food_begin() const { return food_.begin(); };
+   std::vector<food_point>::const_iterator food_end()  const { return food_.end(); };
  
 
 
@@ -55,7 +55,7 @@ class world {
 
    int64_t age() { return N_generation_; };
    int64_t size() { return creatures_.size(); } ;
-   int64_t age_avg();
+   float age_avg();
    int64_t N_alive();
    float total_energy();
    float total_nutrival();

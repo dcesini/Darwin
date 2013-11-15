@@ -108,9 +108,9 @@ void being::move() {
       if (y_ < Y_MIN)  y_ = Y_MAX - fmod( abs(y_) , (Y_MAX - Y_MIN) ) ;
 
       float delta_enr = epsener * sqrt( pow(delta_x,2) + pow(delta_y,2) ) + epsener2 * get_dim() ;
-      energy_ = energy_ - delta_enr ;
+      energy_ -= delta_enr ;
 
-      if (VERBOSE)  cout << "Being " << ID_ << " : moved - " << pmov_x << "," << pmov_y << "," << delta_x << "," << delta_y << x_ << " , " << y_ << " - " << delta_enr << endl;
+      if (VERBOSE)  cout << "Being " << ID_ << " : moved - " << pmov_x << "," << pmov_y << "," << delta_x << "," << delta_y << x_ << " , " << y_ << " - " << delta_enr << "( " << energy_ << " )" << endl;
 
       if (energy_ < 0.0) { 
          ALIVE_ = false; 

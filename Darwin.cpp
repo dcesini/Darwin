@@ -36,7 +36,7 @@ int main() {
    DNA dna2(charm_d, beauty_d, dim_d, athlet_d, karma_d, attracted_d);
    //dna2.set_chromo(c1,5);
 
-   being b1(dna1, 0, 100, true, 1.0, 2.0, 0, 0);
+   being b1(dna1, 0, starting_energy, true, 1.0, 2.0, 0, 0);
    //b1.show();
    being b2(dna2, 0, 100, true, 2.0, 2.0, 0, 0);
 
@@ -66,20 +66,28 @@ int main() {
 
    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
    default_random_engine generator(seed);
-   uniform_real_distribution<float> distribution_x(X_MIN , X_MAX);
-   uniform_real_distribution<float> distribution_y(Y_MIN , Y_MAX);
+   if (BEINGS_START_DISTRIBUTION == "UNIFORM") {
+      uniform_real_distribution<float> beings_distribution_x(X_MIN , X_MAX);
+      uniform_real_distribution<float> beings_distribution_y(Y_MIN , Y_MAX);
+      for (int i = 0; i < N_BEINGS; ++i) {
+         b1.set_x(beings_distribution_x(generator));
+         b1.set_y(beings_distribution_y(generator));
+         myworld.add(b1) ;
+      };
+   };
 
-   for (int i=0; i<100; ++i) {
-      b1.set_x(distribution_x(generator));
-      b1.set_y(distribution_y(generator));
-      myworld.add(b1) ;
+   if (FOOD_POINT_DISTRIBUTION == "UNIFORM") {
+      uniform_real_distribution<float> food_distribution_x(X_MIN , X_MAX);
+      uniform_real_distribution<float> food_distribution_y(Y_MIN , Y_MAX);
+      for (int i = 0; i < N_FOOD_POINT_AT_START; ++i) {
+         food_point fpx( food_distribution_x(generator) , food_distribution_y(generator) , default_nutrival );
+         myworld.add(fpx) ;
+      };
    };
-   for (int i=0; i<100; ++i) {
-      food_point fpx(distribution_x(generator),distribution_y(generator),100.0);
-      myworld.add(fpx) ;
-   };
+
+
    myworld.stats();
-   myworld.evolve(300);
+   myworld.evolve(1000000);
 
    return 0;
 };
