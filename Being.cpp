@@ -107,13 +107,15 @@ void being::move() {
       if (y_ > Y_MAX)  y_ = Y_MIN + fmod( y_ , (Y_MAX - Y_MIN) ) ;
       if (y_ < Y_MIN)  y_ = Y_MAX - fmod( abs(y_) , (Y_MAX - Y_MIN) ) ;
 
-      energy_ = energy_ - epsener * sqrt( pow(delta_x,2) + pow(delta_y,2) ) - epsener2 * get_dim() ;
+      float delta_enr = epsener * sqrt( pow(delta_x,2) + pow(delta_y,2) ) + epsener2 * get_dim() ;
+      energy_ = energy_ - delta_enr ;
 
-      if (VERBOSE)  cout << "Being " << ID_ << " : moved - " << pmov_x << "," << pmov_y << "," << delta_x << "," << delta_y << endl;
+      if (VERBOSE)  cout << "Being " << ID_ << " : moved - " << pmov_x << "," << pmov_y << "," << delta_x << "," << delta_y << x_ << " , " << y_ << " - " << delta_enr << endl;
 
       if (energy_ < 0.0) { 
          ALIVE_ = false; 
-         if (VERBOSE)  cout << "Being " << ID_ << " : died after move" << endl;
+         energy_ = 0.0;
+         if (VERBOSE)  cout << "Being " << ID_ << " : died after move, energy = 0.0" << endl;
       };
       
 
@@ -185,11 +187,11 @@ boost::optional<being> reproduce(const being& lhs, const being& rhs) {
    boost::optional<being> new_being;
  
    if ( are_alive(lhs,rhs) && are_close_enough(lhs,rhs) && are_compatible(lhs,rhs) ) { 
-      if (VERBOSE) cout << "They were lucky, reproduction!" << endl;
+      if (VERBOSE) cout << "ID " << lhs.get_id() << " and ID " << rhs.get_id() << " were lucky, reproduction!" << endl;
       new_being = being(lhs + rhs);
    }
    else {
-         if (VERBOSE) cout << "They were not lucky, no reproduction." << endl;
+         if (false) cout << "They were not lucky, no reproduction." << endl;
    };        
    return new_being ;
 };

@@ -43,9 +43,9 @@ class world {
    void save(std::string const& filename);
    void load(std::string const& filename);
 
-   void add(being const new_b);
+   void add(being const& new_b);
    void remove_being();
-   void add(const food_point new_fp);
+   void add(const food_point& new_fp);
 
    void advance_one_generation(bool dump_to_file = false);
    void evolve(int64_t N_generations);
@@ -54,7 +54,8 @@ class world {
    const std::vector<food_point> food() { return food_; };
 
    int64_t age() { return N_generation_; };
-   int64_t N_beings() { return creatures_.size(); } ;
+   int64_t size() { return creatures_.size(); } ;
+   int64_t age_avg();
    int64_t N_alive();
    float total_energy();
    float total_nutrival();

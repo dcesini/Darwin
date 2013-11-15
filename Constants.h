@@ -52,10 +52,10 @@ const float starting_energy = 1000.0;
 
 // #MOVEMENT CONSTANTS
 const float epsath = 1.0;
-const float epsdim = 0.5;
-const float max_move_1d = 10.0;
-const float epsener = 0.1;
-const float epsener2 = 0.8;
+const float epsdim = 0.1;
+const float max_move_1d = 5.0;
+const float epsener = 0.10;
+const float epsener2 = 0.15;
 const std::string pmov_distr = "UNIFORM";
 
 // EAT CONSTANTS

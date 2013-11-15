@@ -78,6 +78,8 @@ public:
    bool is_alive() const { return ALIVE_; };
    float get_x() const { return x_; };
    float get_y() const { return y_; };
+   void  set_x(float x) { x_ = x; };
+   void  set_y(float y) { y_ = y; };
    point_2d get_pos() const { point_2d pos; pos.set_x(x_); pos.set_y(y_); return pos;};
    Parents get_parents() const { return prnts_; };
    DNA get_dna() const { return mydna_; };

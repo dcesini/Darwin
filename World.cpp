@@ -20,14 +20,14 @@ world::world(int64_t N_being_init, int N_food_point_init) {
 
 };
 
-void world::add(being const new_b) {
+void world::add(being const& new_b) {
 
    creatures_.push_back(new_b);
 
 };
 
 
-void world::add(food_point const new_fp) {
+void world::add(food_point const& new_fp) {
 
    food_.push_back(new_fp);
 
@@ -63,7 +63,7 @@ float world::total_nutrival() {
    for(std::vector<food_point>::const_iterator i = fp_begin(); i!= fp_end(); ++i){
       tnutri +=  i->get_nutrival();
    };
-//   float tnutri = accumulate( creatures_.begin(), creatures_.end(), 0.0f, sum_nutri );
+//   float tnutri = accumulate( food_.begin(), food_.end(), 0.0f, sum_nutri );
    return tnutri;
 
 };
@@ -72,7 +72,7 @@ float world::total_energy() {
 
    float te = 0;
    for(std::vector<being>::const_iterator i = beings_begin(); i!=beings_end(); ++i){
-      te += i->get_energy() ;
+      if (i->is_alive()) te += i->get_energy() ;
    };
 
    return te;
@@ -80,23 +80,28 @@ float world::total_energy() {
 
 void world::advance_one_generation(bool dump_to_file) {
 
-   for(std::vector<being>::iterator lhs_b = beings_begin(); lhs_b!=beings_end(); ++lhs_b){
+   std::vector<being>::iterator this_generation_beings_end = beings_end();
+   std::vector<food_point>::iterator this_generation_fp_end = fp_end();
+
+   for(std::vector<being>::iterator lhs_b = beings_begin(); lhs_b != this_generation_beings_end; ++lhs_b){
 
       lhs_b->move() ;
 
-      for(std::vector<food_point>::iterator fp_i = fp_begin(); fp_i!=fp_end(); ++fp_i){
+      for(std::vector<food_point>::iterator fp_i = fp_begin(); fp_i!=this_generation_fp_end; ++fp_i){
          lhs_b->eat( (*fp_i) ) ;
       };
 
    };
 
-   for( std::vector<being>::iterator lhs_b = beings_begin(); lhs_b!=beings_end() - 1 ; ++lhs_b){
+   for( std::vector<being>::iterator lhs_b = beings_begin(); lhs_b != this_generation_beings_end; ++lhs_b){
 
-      for (std::vector<being>::iterator rhs_b = lhs_b + 1; rhs_b!=beings_end(); ++rhs_b){
-          boost::optional<being> new_b = reproduce( (*lhs_b) , (*rhs_b) ) ;
-          if (new_b) {
-             being b2(new_b);
-             add(b2); 
+      for (std::vector<being>::iterator rhs_b = lhs_b; rhs_b != this_generation_beings_end; ++rhs_b){
+          if (rhs_b!=lhs_b) {
+             boost::optional<being> new_b = reproduce( (*lhs_b) , (*rhs_b) ) ;
+             if (new_b) {
+                being b2(new_b);
+                add(b2); 
+             };
           };
       };
 
@@ -106,21 +111,50 @@ void world::advance_one_generation(bool dump_to_file) {
 
       lhs_b->die() ;
    };
+   
+   ++N_generation_;
 
 };
 
 
 void world::evolve(int64_t N_gen) {
    
-   int64_t i = 0;
-   while ( i < N_gen) {
+   bool VERBOSE = true;
+   for (int64_t i = 0; i < N_gen; ++i) {
 
       advance_one_generation();
-      ++i;
-      ++N_generation_;
-      
+//      ++N_generation_;
+      if (VERBOSE) stats(); 
       if ( N_alive() == 0 ) break;
 
    };
+
+};
+
+
+int64_t world::age_avg() {
+
+
+   int64_t age_avg(0.0);
+   for(std::vector<being>::iterator b = beings_begin(); b!=beings_end(); ++b){
+
+      age_avg += (b->get_age()) ;
+
+   };   //use accumulate
+
+   return float(age_avg) / float(size());
+
+};
+
+void world::stats() {
+
+   std::cout << "World Stats:" << std::endl;
+   std::cout << "World Age = " << age() << std::endl;
+   std::cout << "N Alive = " << N_alive() << std::endl;
+   std::cout << "N beings alive or death = " << size() << std::endl;
+   std::cout << "Total Energy = " << total_energy() << std::endl;
+   std::cout << "Total Nutrival = " << total_nutrival() << std::endl;
+   std::cout << "Total Food Points = " << N_food() << std::endl;
+   std::cout << "Average Being Age = " << age_avg() << std::endl;
 
 };
