@@ -9,11 +9,20 @@
 #include <iostream>
 #include <utility>
 #include <boost/optional.hpp>
+#include <fstream>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/serialization/base_object.hpp>
+#include <boost/serialization/utility.hpp>
+#include <boost/serialization/list.hpp>
+#include <boost/serialization/assume_abstract.hpp>
+
 
 typedef std::pair<int64_t, int64_t> Parents;
 
 class being{
-
+   
+   friend class boost::serialization::access;
    static int64_t N_beings;
 
    int ID_;
@@ -24,6 +33,20 @@ class being{
    float x_;
    float y_;
    Parents prnts_;
+
+   template<class Archive>
+   void serialize(Archive & ar, const unsigned int version)
+   {
+        ar & ID_;
+        ar & mydna_;
+        ar & age_;
+        ar & energy_;
+        ar & ALIVE_;
+        ar & x_;
+        ar & y_;
+        ar & prnts_;
+
+    };
 
 
 public:

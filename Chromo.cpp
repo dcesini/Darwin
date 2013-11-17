@@ -55,6 +55,15 @@ chromo& chromo::operator=(const chromo &rhs) {
    return *this;
 };
 
+bool operator== (chromo const& lhs , chromo const& rhs){
+
+   for (int ii = 0; ii < DIM; ++ii) {
+      if (!(lhs.get_base(ii) == rhs.get_base(ii))) return false;
+   };
+
+   return true;
+}
+
 void chromo::show_chromo() const {
 string s;
 string Result;

@@ -9,6 +9,10 @@
 #include <vector>
 #include <random>
 #include <chrono>
+#include <fstream>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+
 
 using namespace std;
 
@@ -33,8 +37,12 @@ int main() {
    chromo charm_d(charm_default);
 
    DNA dna1(charm_d, beauty_d, dim_d, athlet_d, karma_d, attracted_d);
-   DNA dna2(charm_d, beauty_d, dim_d, athlet_d, karma_d, attracted_d);
+   DNA dna2(attracted_d, beauty_d, dim_d, athlet_d, karma_d, attracted_d);
    //dna2.set_chromo(c1,5);
+   if (dna1 == dna2)  {
+      cout << "TRUE1" << endl;
+   } else { cout << "qualche problema" << endl;
+     };
 
    being b1(dna1, 0, starting_energy, true, 1.0, 2.0, 0, 0);
    //b1.show();
@@ -42,6 +50,59 @@ int main() {
 
    food_point fp2(4.1,4.2);
    food_point fp3(1.1,2.2);
+
+   point_2d p1(1,1);
+   point_2d p2(2,2);
+
+   // create and open a character archive for output
+   ofstream ofs("./points.txt");
+   // save data to archive
+    {
+        boost::archive::text_oarchive oa(ofs);
+        // write class instance to archive
+        oa << p1;
+        oa << p2;
+        oa << beauty_d;
+        oa << dna1;
+        oa << b1;
+    	// archive and stream closed when destructors are called
+    }
+
+
+    // ... some time later restore the class instance to its orginal state
+    point_2d p1new;
+    point_2d p2new;
+    chromo new_beauty;
+    DNA dna1new;
+    being b1new;
+
+    {
+        // create and open an archive for input
+        ifstream ifs("./points.txt");
+        boost::archive::text_iarchive ia(ifs);
+        // read class state from archive
+        ia >> p1new;
+        ia >> p2new;
+        ia >> new_beauty;
+        ia >> dna1new;
+        ia >> b1new;
+        // archive and stream closed when destructors are called
+    }
+
+   cout << "P1new = ";
+   p1new.show_point();
+   cout << endl;
+
+   cout << "P2new = ";
+   p2new.show_point();
+   cout << endl;
+
+   cout << "new beauty = " << new_beauty << endl;
+   cout << "newdna1 = " << dna1new << endl;
+
+   if (dna1 == dna1new) cout << "TRUE!" << endl;
+
+   cout << "B1NEW = " << endl << b1new << endl;
 
    world myworld(1000,1000);
    //myworld.add(b1);
@@ -87,7 +148,34 @@ int main() {
 
 
    myworld.stats();
-   myworld.evolve(1000000);
+   myworld.evolve(500);
+/*
+   // create and open a character archive for output
+   ofstream ofs2("./world.txt");
+   // save data to archive
+    {
+        boost::archive::text_oarchive oa(ofs2);
+        // write class instance to archive
+        oa << myworld;
+        // archive and stream closed when destructors are called
+    }
 
+
+
+    world newworld(1000,1000);
+
+
+    {
+        // create and open an archive for input
+        ifstream ifs2("./world.txt");
+        boost::archive::text_iarchive ia(ifs2);
+        // read class state from archive
+        ia >> newworld;
+        // archive and stream closed when destructors are called
+    }
+
+
+   newworld.stats();
+*/
    return 0;
 };

@@ -10,7 +10,8 @@
 #include <boost/optional.hpp>
 #include <algorithm> 
 #include <numeric> 
-
+#include <boost/lexical_cast.hpp>
+#include <fstream>
 
 world::world(int64_t N_being_init, int N_food_point_init) {
 
@@ -84,7 +85,8 @@ void world::advance_one_generation(bool dump_to_file) {
    std::vector<food_point>::iterator this_generation_fp_end = food_end();
 
    int64_t creatures_end = size();
-
+   std::string extension(".txt");
+   std::string data_path("./DATA/");
 
    //for(std::vector<being>::iterator lhs_b = beings_begin(); lhs_b != this_generation_beings_end; ++lhs_b){
    for(int64_t ii = 0; ii < creatures_end ; ++ii){
@@ -124,6 +126,9 @@ void world::advance_one_generation(bool dump_to_file) {
    };
    
    ++N_generation_;
+   std::string s = boost::lexical_cast<std::string>( N_generation_ );
+   
+   if (dump_to_file) save(data_path + s + extension);
 
 };
 
@@ -132,8 +137,8 @@ void world::evolve(int64_t N_gen) {
    
    bool VERBOSE = true;
    for (int64_t i = 0; i < N_gen; ++i) {
-
-      advance_one_generation();
+      bool file_dump(true);
+      advance_one_generation(file_dump);
 //      ++N_generation_;
       if (VERBOSE) stats(); 
       if ( N_alive() == 0 ) break;
@@ -172,5 +177,20 @@ void world::stats() {
    std::cout << "Total Nutrival = " << total_nutrival() << std::endl;
    std::cout << "Total Food Points = " << N_food() << std::endl;
    std::cout << "Average Being Age = " << age_avg() << std::endl;
+
+};
+
+void world::save(std::string const& filename) {
+
+      // create and open a character archive for output
+   std::ofstream ofs2(filename);
+   // save data to archive
+    {
+        boost::archive::text_oarchive oa(ofs2);
+        // write class instance to archive
+        oa << (*this);
+        // archive and stream closed when destructors are called
+    }
+
 
 };

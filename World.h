@@ -10,12 +10,30 @@
 #include "Constants.h"
 #include "Chromo.h"
 #include <boost/optional.hpp>
+#include <fstream>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/serialization/base_object.hpp>
+#include <boost/serialization/utility.hpp>
+#include <boost/serialization/list.hpp>
+#include <boost/serialization/vector.hpp>
+#include <boost/serialization/assume_abstract.hpp>
 
 class world {
 
+   friend class boost::serialization::access;
    std::vector<food_point> food_;
    std::vector<being>      creatures_;
    int64_t N_generation_ ;
+
+   template<class Archive>
+   void serialize(Archive & ar, const unsigned int version)
+   {
+        ar & food_;
+        ar & creatures_;
+        ar & N_generation_;
+
+    };
 
    public:
 

@@ -4,10 +4,20 @@
 #include "Constants.h"
 #include "Chromo.h"
 #include <iostream>
+#include <fstream>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 
 class DNA {
 
+   friend class boost::serialization::access;
    chromo dn_[CHROMO_NUMBER];
+
+   template<class Archive>
+   void serialize(Archive & ar, const unsigned int version)
+   {
+        ar & dn_;
+    };
 
    public:
 
@@ -26,4 +36,6 @@ class DNA {
 
 std::ostream& operator<<(std::ostream& os, const DNA & obj);
 DNA operator+(const DNA& lhs, const DNA& rhs);
+bool operator== (DNA const& lhs , DNA const& rhs);
+
 #endif

@@ -4,11 +4,23 @@
 #include "Constants.h"
 #include "Commons.h"
 #include <iostream>
+#include <fstream>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 
 class food_point {
 
+   friend class boost::serialization::access;
    point_2d pos_;
    float nutrival_;
+
+   template<class Archive>
+   void serialize(Archive & ar, const unsigned int version)
+   {
+        ar & pos_;
+        ar & nutrival_;
+
+    };
 
    public:
 

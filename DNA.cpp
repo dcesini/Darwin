@@ -36,6 +36,7 @@ void DNA::set_chromo(chromo const& ch, int chromo_num) {
 
 DNA& DNA::operator=(const DNA &rhs) {
    for(int ii = 0; ii<CHROMO_NUMBER; ii++) dn_[ii] = rhs.dn_[ii];
+   return *this;
 };
 
 
@@ -43,7 +44,14 @@ void DNA::show_dna() const {
   for(int ii = 0; ii<CHROMO_NUMBER; ii++) dn_[ii].show_chromo();
 };
 
+bool operator== (DNA const& lhs , DNA const& rhs){
 
+   for (int ii = 0; ii < CHROMO_NUMBER; ++ii) {
+      if (!(lhs.get_chromo(ii) == rhs.get_chromo(ii))) return false;
+   };
+
+   return true;
+}
 
 ostream& operator<<(ostream& os, const DNA& obj) {
 

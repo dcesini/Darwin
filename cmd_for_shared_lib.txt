@@ -1,0 +1,6 @@
+g++ -c -W -fpic -std=c++0x DNA.cpp read_world.cpp Commons.cpp Chromo.cpp Being.cpp Food.cpp World.cpp -lboost_serialization
+g++ -shared -shared -Wl,-soname,libctest.so.1 -o libctest.so.1.0 read_world.o Commons.o Chromo.o Being.o Food.o World.o DNA.o
+ln -sf libctest.so.1.0 libctest.so
+ln -sf libctest.so.1.0 libctest.so.1
+g++ -std=c++0x -L. read.cpp -lctest -lboost_serialization -o cprog
+./cprog 
