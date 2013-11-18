@@ -113,6 +113,11 @@ int main() {
    //myworld.advance_one_generation();
    //myworld.stats();
 
+   myworld.load("DATA/200.txt");
+   myworld.stats();
+   myworld.evolve(1);
+   myworld.stats();
+   return 0;
 
    vector<int> iv;
    iv.reserve(10);

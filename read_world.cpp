@@ -12,7 +12,6 @@
 #include <fstream>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
-//#include "Read_world_from_file.h"
 
 extern "C" {
 
@@ -29,20 +28,3 @@ extern "C" {
 }
 
 };
-
-/*
-int main() {
-
-   std::string filename;
-
-   filename = std::string("./DATA/200.txt");
-   
-   world* newworld = read_world_from_file();
-
-   newworld->stats();
-
-   return 0;
-};   
-
-
-*/
