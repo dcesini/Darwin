@@ -1,25 +1,29 @@
 #include "Constants.h"
+#include "Constants_wrapper.h"
 #include "Chromo.h"
 #include <iostream>
 #include <string>
 #include <sstream>
 
-using namespace std;
+
+std::string chromo::REPRODUCTION_METHOD = "";
+
 
 chromo::chromo(){
    for(int i = 0; i < DIM ; ++i) ch_[i] = 0;
+   REPRODUCTION_METHOD = "SEGMENTS_EXCHANGE";
 };
 
 chromo::chromo(const short int ch_ii[DIM]) {
 
    for(int i = 0; i < DIM ; i++) ch_[i] = ch_ii[i];
-
+   REPRODUCTION_METHOD = "SEGMENTS_EXCHANGE";
 };
 
 chromo::chromo(const chromo& c1) {
 
    for(int i = 0; i < DIM ; i++) ch_[i] = c1.get_base(i);
-
+   REPRODUCTION_METHOD = "SEGMENTS_EXCHANGE";
 };
 
 
@@ -31,7 +35,7 @@ void chromo::set_base(int pos, short int val) {
    }   
    else
    {
-      cout << "Error(chromo::set_base): pos outside limits";
+      std::cout << "Error(chromo::set_base): pos outside limits";
    }
 };
 
@@ -43,7 +47,7 @@ short int chromo::get_base(int pos) const {
    }  
    else
    {
-      cout << "Error(chromo::get_pos): pos outside limits";
+      std::cout << "Error(chromo::get_pos): pos outside limits";
       return -1;
    }
 };
@@ -65,14 +69,14 @@ bool operator== (chromo const& lhs , chromo const& rhs){
 }
 
 void chromo::show_chromo() const {
-string s;
-string Result;
+std::string s;
+std::string Result;
 s = "";
 for(int ii = 0; ii < CHROMO_SEGMENTS; ii++) {
    s = s + "[";
    for(int jj = 0; jj < SEGMENTS_LENGHT; jj++) {
  
-      ostringstream convert;   // stream used for the conversion
+      std::ostringstream convert;   // stream used for the conversion
       convert << ch_[ ii*SEGMENTS_LENGHT + jj];      // insert the textual representation of 'Number' in the characters in the stream
       Result = convert.str(); // set 'Result' to the contents of the stream
       if(jj == SEGMENTS_LENGHT - 1) s = s + Result ;
@@ -83,19 +87,19 @@ for(int ii = 0; ii < CHROMO_SEGMENTS; ii++) {
    }
 
 
-cout << s << endl;
+std::cout << s << std::endl;
 };
 
 
-ostream& operator<<(ostream& os, const chromo& obj) {
+std::ostream& operator<<(std::ostream& os, const chromo& obj) {
 
 for(int ii = 0; ii < CHROMO_SEGMENTS; ++ii) {
    os << "[";
-   string Result;
+   std::string Result;
 
    for(int jj = 0; jj < SEGMENTS_LENGHT; jj++) {
 
-      ostringstream convert;   // stream used for the conversion
+      std::ostringstream convert;   // stream used for the conversion
       convert << obj.get_base(ii*SEGMENTS_LENGHT + jj);      // insert the textual representation of 'Number' in the characters in the stream
       Result = convert.str(); // set 'Result' to the contents of the stream
       if(jj == SEGMENTS_LENGHT - 1) os << Result ;
@@ -112,7 +116,7 @@ return os;
 chromo chromo_mix(chromo const& lhs, chromo const& rhs) {
 
    chromo new_chromo;
-
+   std::string REPRODUCTION_METHOD(lhs.repr_method());
    if (REPRODUCTION_METHOD == "SEGMENTS_EXCHANGE") {
 
       for(int jj = 0; jj < (CHROMO_SEGMENTS * SEGMENTS_LENGHT) / 2; ++jj) {

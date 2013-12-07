@@ -2,6 +2,7 @@
 #define FOOD_POINT_H
 
 #include "Constants.h"
+#include "Constants_wrapper.h"
 #include "Commons.h"
 #include <iostream>
 #include <fstream>
@@ -24,22 +25,16 @@ class food_point {
 
    public:
 
-      food_point(float x, float y):
-         pos_(x,y) ,
-         nutrival_(default_nutrival) {};
+      food_point() :
+         pos_(0.0,0.0) ,
+         nutrival_(0.0) {} ;    
 
       food_point(float x, float y, float nutri) :
          pos_(x,y) ,
          nutrival_(nutri) {};
 
-      food_point(const point_2d& p)
-         : pos_(p) , nutrival_(default_nutrival) {}; 
-
       food_point(const point_2d& p , float nutri)
          : pos_(p) , nutrival_(nutri) {};
-
-      food_point()
-         : pos_(0.0,0.0) , nutrival_(default_nutrival) {};
 
       food_point(const food_point& other)
          : pos_(other.pos_) , nutrival_(other.nutrival_) {};

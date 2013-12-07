@@ -198,7 +198,7 @@ void world::save(std::string const& filename) {
 
 void world::load(std::string const& filename) {
 
-   world newworld(1000,1000);
+   world newworld(1,1);
    std::ifstream ifs2(filename);
    boost::archive::text_iarchive ia(ifs2);
    ia >> (*this);

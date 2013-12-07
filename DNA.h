@@ -2,6 +2,7 @@
 #define DNA_H
 
 #include "Constants.h"
+#include "Constants_wrapper.h"
 #include "Chromo.h"
 #include <iostream>
 #include <fstream>

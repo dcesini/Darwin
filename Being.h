@@ -2,14 +2,17 @@
 #define BEING_H
 
 #include "Constants.h"
+#include "Constants_wrapper.h"
 #include "Chromo.h"
 #include "DNA.h"
 #include "Commons.h"
 #include "Food.h"
+#include "AutoRNG.h"
 #include <iostream>
 #include <utility>
 #include <boost/optional.hpp>
 #include <fstream>
+#include <random>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/serialization/base_object.hpp>
@@ -23,6 +26,7 @@ typedef std::pair<int64_t, int64_t> Parents;
 class being{
    
    friend class boost::serialization::access;
+   friend   bool are_compatible(const being& lhs, const being& rhs);
    static int64_t N_beings;
 
    int ID_;
@@ -33,7 +37,8 @@ class being{
    float x_;
    float y_;
    Parents prnts_;
-
+   static constants_wrapper cfg;
+   unsigned seed_;
    template<class Archive>
    void serialize(Archive & ar, const unsigned int version)
    {
@@ -50,7 +55,9 @@ class being{
 
 
 public:
- 
+   
+   static InitRNG RNG;
+
    being(const DNA& dna1, int age, float  energy, bool ALIVE, float x, float y, int64_t pID1, int64_t pID2) :
       ID_(N_beings)      ,
       mydna_(dna1)       ,
@@ -77,8 +84,7 @@ public:
    being(boost::optional<being> b0);
 
    being() :
-
-   energy_(starting_energy)      ,
+   energy_(cfg.starting_energy)      ,
    ALIVE_(true)                  ,
    x_(0.0)                       ,
    y_(0.0)                       ,
@@ -93,6 +99,9 @@ public:
 
    };
 
+   void configure(constants_wrapper const& conf);
+   unsigned seed() {return seed_ ;};
+   constants_wrapper get_cfg() const { return cfg; };
    int64_t get_N_beings() const;
    int get_id() const { return ID_; };
    int get_age() const { return age_; };

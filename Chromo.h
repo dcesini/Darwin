@@ -4,13 +4,14 @@
 #include "Constants.h"
 #include <iostream>
 #include <fstream>
+#include <string>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 
 class chromo {
 
-    friend class boost::serialization::access;
-    short int ch_[DIM];
+   friend class boost::serialization::access;
+   short int ch_[DIM];
 
    template<class Archive>
    void serialize(Archive & ar, const unsigned int version)
@@ -19,17 +20,19 @@ class chromo {
     };
 
 //    char name[];
+   static std::string REPRODUCTION_METHOD;
 
-    public:
+   public:
 
-       chromo();
-       chromo(const chromo& c1);
-       chromo(const short int c1[DIM]);
-       chromo& operator=(const chromo &rhs);
-       void show_chromo() const;
-       void set_base(int pos, short int val);
-       short int get_base(int pos) const;
-       int sum_chromo() const;
+      chromo();
+      chromo(const chromo& c1);
+      chromo(const short int c1[DIM]);
+      chromo& operator=(const chromo &rhs);
+      void show_chromo() const;
+      void set_base(int pos, short int val);
+      short int get_base(int pos) const;
+      int sum_chromo() const;
+      std::string repr_method() const { return REPRODUCTION_METHOD; };
 };
 
 std::ostream& operator<<( std::ostream& os, const chromo& obj);

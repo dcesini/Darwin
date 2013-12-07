@@ -25,6 +25,8 @@ class world {
    std::vector<food_point> food_;
    std::vector<being>      creatures_;
    int64_t N_generation_ ;
+   std::string name_;
+   static constants_wrapper cfg;
 
    template<class Archive>
    void serialize(Archive & ar, const unsigned int version)
@@ -32,13 +34,13 @@ class world {
         ar & food_;
         ar & creatures_;
         ar & N_generation_;
-
+        ar & name_;
     };
 
    public:
 
    world(int64_t N_being_init, int N_food_point_init);
-
+   void configure(constants_wrapper const& conf) { cfg = conf; };
 //   void create_food(int64_t N_food_point);
 //   void create_population(int64_t N_being);
    
@@ -79,6 +81,8 @@ class world {
    float total_nutrival();
    int64_t N_food() { return food_.size(); };
    void stats();
+   void name(std::string const& Name) { name_ = Name; };
+   std::string name() { return name_; };
 
 };
 

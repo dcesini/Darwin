@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Constants.h"
+#include "Constants.h"
 #include "Being.h"
 #include "Chromo.h"
 #include "DNA.h"
@@ -14,10 +15,13 @@
 using namespace std;
 
 int64_t being::N_beings = 0;
+InitRNG being::RNG;
+constants_wrapper being::cfg;
 
-unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-default_random_engine generator(seed);
-
+void being::configure(constants_wrapper const& conf) { 
+   cfg = conf;
+   RNG.seed(cfg.SEED);
+} ;
 
 being::being(boost::optional<being> b0) {
 
@@ -73,10 +77,10 @@ being operator+(const being & lhs, const being& rhs) {
 
    DNA new_dna = lhs.get_dna() + rhs.get_dna();
    uniform_real_distribution<float> distribution_x(lhs.get_x(),rhs.get_x());
-   float const new_x( distribution_x(generator) );
+   float const new_x( distribution_x(lhs.RNG.generator) );
    uniform_real_distribution<float> distribution_y(lhs.get_y(),rhs.get_y());
-   float new_y( distribution_y(generator) );
-   being new_being(new_dna, 0 , starting_energy, true, new_x, new_y, lhs.get_id(), rhs.get_id());
+   float new_y( distribution_y(lhs.RNG.generator) );
+   being new_being(new_dna, 0 , lhs.get_cfg().starting_energy, true, new_x, new_y, lhs.get_id(), rhs.get_id());
    return new_being;
 };
 
@@ -88,26 +92,26 @@ void being::move() {
    float pmov_y = 0.0;
 
    if (ALIVE_) {
-      if (pmov_distr == "UNIFORM") {
+      if (cfg.pmov_distr == "UNIFORM") {
       
-         uniform_real_distribution<float> distribution_mov(-1 * max_move_1d , max_move_1d);
-         pmov_x = distribution_mov(generator);
+         uniform_real_distribution<float> distribution_mov(-1 * cfg.max_move_1d , cfg.max_move_1d);
+         pmov_x = distribution_mov(RNG.generator);
          //pmov_x = float(1200.0);
-         pmov_y = distribution_mov(generator);
+         pmov_y = distribution_mov(RNG.generator);
          //pmov_y = float(-1200.0);
       };
  
-      float const resistance = get_dim() * epsdim; 
-      float delta_x = pmov_x * max( epsath * get_athlet() - resistance, float(0.0) ) ;
-      float delta_y = pmov_y * max( epsath * get_athlet() - resistance, float(0.0) ) ;
+      float const resistance = get_dim() * cfg.epsdim; 
+      float delta_x = pmov_x * max( cfg.epsath * get_athlet() - resistance, float(0.0) ) ;
+      float delta_y = pmov_y * max( cfg.epsath * get_athlet() - resistance, float(0.0) ) ;
       x_ += delta_x ;
       y_ += delta_y ;
-      if (x_ > X_MAX)  x_ = X_MIN + fmod( x_ , (X_MAX - X_MIN) ) ;
-      if (x_ < X_MIN)  x_ = X_MAX - fmod( abs(x_) , (X_MAX - X_MIN) ) ;
-      if (y_ > Y_MAX)  y_ = Y_MIN + fmod( y_ , (Y_MAX - Y_MIN) ) ;
-      if (y_ < Y_MIN)  y_ = Y_MAX - fmod( abs(y_) , (Y_MAX - Y_MIN) ) ;
+      if (x_ > cfg.X_MAX)  x_ = cfg.X_MIN + fmod( x_ , (cfg.X_MAX - cfg.X_MIN) ) ;
+      if (x_ < cfg.X_MIN)  x_ = cfg.X_MAX - fmod( abs(x_) , (cfg.X_MAX - cfg.X_MIN) ) ;
+      if (y_ > cfg.Y_MAX)  y_ = cfg.Y_MIN + fmod( y_ , (cfg.Y_MAX - cfg.Y_MIN) ) ;
+      if (y_ < cfg.Y_MIN)  y_ = cfg.Y_MAX - fmod( abs(y_) , (cfg.Y_MAX - cfg.Y_MIN) ) ;
 
-      float delta_enr = epsener * sqrt( pow(delta_x,2) + pow(delta_y,2) ) + epsener2 * get_dim() ;
+      float delta_enr = cfg.epsener * sqrt( pow(delta_x,2) + pow(delta_y,2) ) + cfg.epsener2 * get_dim() ;
       energy_ -= delta_enr ;
 
       if (VERBOSE)  cout << "Being " << ID_ << " : moved - " << pmov_x << "," << pmov_y << "," << delta_x << "," << delta_y << x_ << " , " << y_ << " - " << delta_enr << "( " << energy_ << " )" << endl;
@@ -130,7 +134,7 @@ void being::eat(food_point& fp) {
    if (ALIVE_) {
       float const dfp = dist( get_pos() , fp.get_pos() ) ;
       if ( float(get_dim()) >= dfp && fp.get_nutrival() > 0.0 ) {
-         float const delta_nutri = epsnutri * fp.get_nutrival() ;  
+         float const delta_nutri = cfg.epsnutri * fp.get_nutrival() ;  
          energy_ += delta_nutri ;
          fp.decrease_nutrival(delta_nutri) ;
          if (fp.get_nutrival() < 0.0) fp.set_nutrival(0.0) ;
@@ -174,10 +178,10 @@ bool are_compatible(const being& lhs, const being& rhs) {
 
    uniform_real_distribution<float> distribution_rep(0 , 1);
    int const compat = get_compatibility(lhs,rhs);
-   float prepr = epsrepr * ( float(compat) / float( lhs.get_beauty() ) ) ;
-   float dice_roll = distribution_rep(generator);
+   float prepr = lhs.cfg.epsrepr * ( float(compat) / float( lhs.get_beauty() ) ) ;
+   float dice_roll = distribution_rep(lhs.RNG.generator);
 
-   return distribution_rep(generator) < prepr;
+   return distribution_rep(lhs.RNG.generator) < prepr;
 
 };
 
@@ -204,18 +208,18 @@ void being::mutation() {
    bool VERBOSE = true;
 
    if (ALIVE_) {
-      if (chromo_affected == "ALL") {
+      if (cfg.chromo_affected == "ALL") {
          for (int ii=0; ii<CHROMO_NUMBER; ++ii) {
-            float dice_roll = distribution_mut(generator);
-            if (dice_roll < pmut) {
-               if( muted_gene_selection == "UNIFORM") {
-               int const ngene = distribution_gene(generator);
+            float dice_roll = distribution_mut(RNG.generator);
+            if (dice_roll < cfg.pmut) {
+               if( cfg.muted_gene_selection == "UNIFORM") {
+               int const ngene = distribution_gene(RNG.generator);
                if (mydna_.get_chromo(ii).get_base(ngene) == 0) newval = 1;
                else newval = 0;
                chromo newchromo(mydna_.get_chromo(ii));
                newchromo.set_base(ngene,newval);
                mydna_.set_chromo( newchromo , ii );
-               if (VERBOSE) cout << "Being " << get_id() << " muted at chromo " << ii << " and gene " << ngene << " ( pmut = " << pmut << " dice = " << dice_roll << " )" << endl;
+               if (VERBOSE) cout << "Being " << get_id() << " muted at chromo " << ii << " and gene " << ngene << " ( pmut = " << cfg.pmut << " dice = " << dice_roll << " )" << endl;
                };
             };
          };
@@ -247,9 +251,9 @@ void being::die(bool force_death) {
    if (ALIVE_){
 
 
-      float life_dice = distribution_life(generator);
-      if (age_ <= PROBABLE_AGE_LIMIT) pdie = epsage * (age_ / PROBABLE_AGE_LIMIT);
-      else pdie = 1 - (epsage / (age_ - PROBABLE_AGE_LIMIT) );
+      float life_dice = distribution_life(RNG.generator);
+      if (age_ <= cfg.PROBABLE_AGE_LIMIT) pdie = cfg.epsage * (float(age_) / cfg.PROBABLE_AGE_LIMIT);
+      else pdie = 1 - (cfg.epsage / (age_ - cfg.PROBABLE_AGE_LIMIT) );
       if (life_dice < pdie) {
          ALIVE_ = false;
          if (VERBOSE) cout << "Being " << get_id() << " died at age = " << get_age()  << "( " << pdie << "," << life_dice << " )" << endl;

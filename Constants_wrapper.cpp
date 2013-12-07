@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <chrono>
 #include <boost/any.hpp>
 #include "Constants.h"
 #include "Constants_wrapper.h"
@@ -53,6 +54,8 @@ constants_wrapper::constants_wrapper() {
   po::options_description desc_("Options");
   // Setup options.
   desc_.add_options()
+    ("SEED", po::value< int >( &SEED ), "Initial seed" );
+   desc_.add_options()
     ("X_MIN", po::value< float >( &X_MIN ), "World X_MIN" );
   desc_.add_options()
     ("X_MAX", po::value< float >( &X_MAX ), "World X_MAX" );
@@ -126,8 +129,8 @@ constants_wrapper::constants_wrapper() {
     ("pmut", po::value< float >( &pmut ), "Probability that a chromosome is mutated" );
   desc_.add_options()
     ("muted_gene_selection", po::value< std::string >( &muted_gene_selection ), "Distribution to control how a gene is selected for mutation. Available: [UNIFORM]" );
-//  desc_.add_options()
-//    ("fout_name", po::value< std::string >( &fout_name ), "Base path and name for output files" );
+  desc_.add_options()
+    ("fout_name", po::value< std::string >( &fout_name ), "Base path and name for output files" );
   desc_.add_options()
     ("food_file", po::value< std::string >( &food_file ), "Name of the food file containtng the points at the beginning" );
   desc_.add_options()
@@ -138,10 +141,14 @@ constants_wrapper::constants_wrapper() {
     ("beings_file", po::value< std::string >( &beings_file ), "Name of the  file containtng the beings at the beginning" );
   desc_.add_options()
     ("world_init_file_name", po::value< std::string >( &world_init_file_name ), "Name of the  file containtng the init world for restart" );
+  desc_.add_options()
+    ("chromo_affected", po::value< std::string >( &chromo_affected ), "Which chromo are affected by mutation. Available: [ALL]" );
 
   
   const std::string cfg_file_name("darwin.cfg");
   read( desc_, cfg_file_name);
+  if (SEED == 0) SEED = abs(std::chrono::system_clock::now().time_since_epoch().count());
+  else SEED = abs(SEED);
 
 };    // close di ctor
 
@@ -158,14 +165,13 @@ it++ ) {
          std::cout << "# " << it->first << "=is_defaulted" << std::endl;
 
        if (is_int(it->second.value()))
-         std::cout << it->first << "=" << vm_[it->first].as<int>() <<
-std::endl;
+         std::cout << it->first << "=" << vm_[it->first].as<int>() << std::endl;
        else if (is_double(it->second.value()))
-         std::cout << it->first << "=" << vm_[it->first].as<double>() <<
-std::endl;
+         std::cout << it->first << "=" << vm_[it->first].as<double>() << std::endl;
        else if (is_char_ptr(it->second.value()))
-         std::cout << it->first << "=" << vm_[it->first].as<const char
-*>() << std::endl;
+         std::cout << it->first << "=" << vm_[it->first].as<const char*>() << std::endl;
+       else if (is_float(it->second.value()))
+         std::cout << it->first << "=" << vm_[it->first].as<float>() << std::endl;
        else if (is_string(it->second.value())) {
          std::cout << it->first << "=";
          std::string temp = vm_[it->first].as<std::string>();
@@ -175,6 +181,40 @@ std::endl;
            std::cout << "true" << std::endl;
        }
   }
+};
+
+void constants_wrapper::save(std::string const& filename) {
+
+   std::ofstream outstr;
+   outstr.open(filename);
+   
+   for (po::variables_map::iterator it=vm_.begin(); it != vm_.end();
+it++ ) {
+
+       if (is_empty(it->second.value()))
+         outstr << "# " << it->first << "= is_empty" << std::endl;
+
+       if (vm_[it->first].defaulted())
+         outstr << "# " << it->first << "= is_defaulted" << std::endl;
+
+       if (is_int(it->second.value()))
+         outstr << it->first << " = " << vm_[it->first].as<int>() << std::endl;
+       else if (is_double(it->second.value()))
+         outstr << it->first << " = " << vm_[it->first].as<double>() << std::endl;
+       else if (is_char_ptr(it->second.value()))
+         outstr << it->first << " = " << vm_[it->first].as<const char*>() << std::endl;
+       else if (is_float(it->second.value()))
+         outstr << it->first << " = " << vm_[it->first].as<float>() << std::endl;
+       else if (is_string(it->second.value())) {
+         outstr << it->first << " = ";
+         std::string temp = vm_[it->first].as<std::string>();
+         if (temp.size())
+           outstr << temp << std::endl;
+         else
+           outstr << "true" << std::endl;
+       }
+  }
+  outstr.close();
 }; 
 /*
 void program_options_wrapper::get_typeid(const boost::any & operand) {

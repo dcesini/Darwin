@@ -1,11 +1,13 @@
 #include <iostream>
 #include "Constants.h"
+#include "Constants_wrapper.h"
 #include "Commons.h"
 #include "Being.h"
 #include "Chromo.h"
 #include "Food.h"
 #include "DNA.h"
 #include "World.h"
+#include "AutoRNG.h"
 #include <vector>
 #include <random>
 #include <chrono>
@@ -18,15 +20,19 @@ using namespace std;
 
 int main() {
 
+   constants_wrapper cfg;
+   cfg.show();
+   InitRNG RNG;
+   RNG.seed(cfg.SEED);
 
+   cout << endl << endl;
+   cout << "X_MIN = " << cfg.X_MIN << endl;
+   cout << "X_MAX = " << cfg.X_MAX << endl;
+   cout << "Y_MIN = " << cfg.Y_MIN << endl;
+   cout << "Y_MAX = " << cfg.Y_MAX << endl;
 
-   cout << "X_MIN = " << X_MIN << endl;
-   cout << "X_MAX = " << X_MAX << endl;
-   cout << "Y_MIN = " << Y_MIN << endl;
-   cout << "Y_MAX = " << Y_MAX << endl;
-
-   cout << "READ_FOOD_FROM_FILE = " << READ_FOOD_FROM_FILE << endl;
-   cout << "FOOD_POINT_DISTRIBUTION = " << FOOD_POINT_DISTRIBUTION << endl;
+   cout << "READ_FOOD_FROM_FILE = " << cfg.READ_FOOD_FROM_FILE << endl;
+   cout << "FOOD_POINT_DISTRIBUTION = " << cfg.FOOD_POINT_DISTRIBUTION << endl;
 
 
    chromo beauty_d(beauty_default);
@@ -43,13 +49,15 @@ int main() {
       cout << "TRUE1" << endl;
    } else { cout << "qualche problema" << endl;
      };
-
-   being b1(dna1, 0, starting_energy, true, 1.0, 2.0, 0, 0);
+   
+   being conf_being(dna1, 0, cfg.starting_energy, true, 1.0, 2.0, 0, 0);
+   conf_being.configure(cfg);
+   being b1(dna1, 0, cfg.starting_energy, true, 1.0, 2.0, 0, 0);
    //b1.show();
    being b2(dna2, 0, 100, true, 2.0, 2.0, 0, 0);
 
-   food_point fp2(4.1,4.2);
-   food_point fp3(1.1,2.2);
+   food_point fp2(4.1, 4.2, cfg.default_nutrival);
+   food_point fp3(1.1, 2.2, cfg.default_nutrival);
 
    point_2d p1(1,1);
    point_2d p2(2,2);
@@ -104,7 +112,10 @@ int main() {
 
    cout << "B1NEW = " << endl << b1new << endl;
 
-   world myworld(1000,1000);
+   world myworld(cfg.N_BEINGS,cfg.N_FOOD_POINT_AT_START);
+   myworld.name("MyWorld");
+   cout << "World name = " << myworld.name() << endl;
+   
    //myworld.add(b1);
    //myworld.add(b2);
    //myworld.add(fp2);
@@ -113,11 +124,10 @@ int main() {
    //myworld.advance_one_generation();
    //myworld.stats();
 
-   myworld.load("DATA/200.txt");
-   myworld.stats();
-   myworld.evolve(1);
-   myworld.stats();
-   return 0;
+//   myworld.load("DATA/200.txt");
+//   myworld.stats();
+//   myworld.evolve(1);
+//   myworld.stats();
 
    vector<int> iv;
    iv.reserve(10);
@@ -130,30 +140,28 @@ int main() {
    }
 
 
-   unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-   default_random_engine generator(seed);
-   if (BEINGS_START_DISTRIBUTION == "UNIFORM") {
-      uniform_real_distribution<float> beings_distribution_x(X_MIN , X_MAX);
-      uniform_real_distribution<float> beings_distribution_y(Y_MIN , Y_MAX);
-      for (int i = 0; i < N_BEINGS; ++i) {
-         b1.set_x(beings_distribution_x(generator));
-         b1.set_y(beings_distribution_y(generator));
+   if (cfg.BEINGS_START_DISTRIBUTION == "UNIFORM") {
+      uniform_real_distribution<float> beings_distribution_x(cfg.X_MIN , cfg.X_MAX);
+      uniform_real_distribution<float> beings_distribution_y(cfg.Y_MIN , cfg.Y_MAX);
+      for (int i = 0; i < cfg.N_BEINGS; ++i) {
+         b1.set_x(beings_distribution_x(RNG.generator));
+         b1.set_y(beings_distribution_y(RNG.generator));
          myworld.add(b1) ;
       };
    };
 
-   if (FOOD_POINT_DISTRIBUTION == "UNIFORM") {
-      uniform_real_distribution<float> food_distribution_x(X_MIN , X_MAX);
-      uniform_real_distribution<float> food_distribution_y(Y_MIN , Y_MAX);
-      for (int i = 0; i < N_FOOD_POINT_AT_START; ++i) {
-         food_point fpx( food_distribution_x(generator) , food_distribution_y(generator) , default_nutrival );
+   if (cfg.FOOD_POINT_DISTRIBUTION == "UNIFORM") {
+      uniform_real_distribution<float> food_distribution_x(cfg.X_MIN , cfg.X_MAX);
+      uniform_real_distribution<float> food_distribution_y(cfg.Y_MIN , cfg.Y_MAX);
+      for (int i = 0; i < cfg.N_FOOD_POINT_AT_START; ++i) {
+         food_point fpx( food_distribution_x(RNG.generator) , food_distribution_y(RNG.generator) , cfg.default_nutrival );
          myworld.add(fpx) ;
       };
    };
 
 
    myworld.stats();
-   myworld.evolve(500);
+   myworld.evolve(cfg.ITER_NUMBER);
 /*
    // create and open a character archive for output
    ofstream ofs2("./world.txt");
