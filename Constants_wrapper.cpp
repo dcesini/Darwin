@@ -64,7 +64,7 @@ constants_wrapper::constants_wrapper() {
   desc_.add_options()
     ("Y_MAX", po::value< float >( &Y_MAX ), "World Y_MAX" );
   desc_.add_options()
-    ("READ_FOOD_FROM_FILE", po::value< bool >( &READ_FOOD_FROM_FILE ), "Get food points positions from the food_file" );
+    ("READ_FOOD_FROM_FILE", po::value< int >( &READ_FOOD_FROM_FILE ), "Get food points positions from the food_file" );
   desc_.add_options()
     ("default_nutrival", po::value< float >( &default_nutrival ), "default_nutrival" );
   desc_.add_options()
@@ -72,13 +72,13 @@ constants_wrapper::constants_wrapper() {
   desc_.add_options()
     ("FOOD_POINT_DISTRIBUTION", po::value< std::string >( &FOOD_POINT_DISTRIBUTION ), "Type of food point distribution [Available: UNIFORM]" );
   desc_.add_options()
-    ("ENABLE_RADIACTIVE_SOURCES", po::value< bool >( &ENABLE_RADIACTIVE_SOURCES ), "ENABLE_RADIACTIVE_SOURCES" );
+    ("ENABLE_RADIACTIVE_SOURCES", po::value< int >( &ENABLE_RADIACTIVE_SOURCES ), "ENABLE_RADIACTIVE_SOURCES" );
   desc_.add_options()
     ("N_RAD_SOURCES_AT_START", po::value< int >( &N_RAD_SOURCES_AT_START ), "N_RAD_SOURCES_AT_START" );
   desc_.add_options()
     ("default_rad", po::value< float >( &default_rad ), "radioactive sources activity at start" );
   desc_.add_options()
-    ("READ_POPULATION_FROM_FILE", po::value< bool >( &READ_POPULATION_FROM_FILE ), "Get radiaoactive sources from a file" );
+    ("READ_POPULATION_FROM_FILE", po::value< int >( &READ_POPULATION_FROM_FILE ), "Get radiaoactive sources from a file" );
   desc_.add_options()
     ("N_BEINGS", po::value< int >( &N_BEINGS ), "Number of beings at the beginning" );
   desc_.add_options()
@@ -136,7 +136,7 @@ constants_wrapper::constants_wrapper() {
   desc_.add_options()
     ("rad_file", po::value< std::string >( &rad_file ), "Name of the radioactive sources file containtng the points at the beginning" );
   desc_.add_options()
-    ("READ_RAD_FROM_FILE", po::value< bool >( &READ_RAD_FROM_FILE ), "Read radiation sources positions form file" );
+    ("READ_RAD_FROM_FILE", po::value< int >( &READ_RAD_FROM_FILE ), "Read radiation sources positions form file" );
   desc_.add_options()
     ("beings_file", po::value< std::string >( &beings_file ), "Name of the  file containtng the beings at the beginning" );
   desc_.add_options()

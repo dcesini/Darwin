@@ -38,7 +38,7 @@ class being{
    float y_;
    Parents prnts_;
    static constants_wrapper cfg;
-   unsigned seed_;
+   bool inhibit_;
    template<class Archive>
    void serialize(Archive & ar, const unsigned int version)
    {
@@ -50,6 +50,7 @@ class being{
         ar & x_;
         ar & y_;
         ar & prnts_;
+        ar & inhibit_;
 
     };
 
@@ -66,6 +67,7 @@ public:
       ALIVE_(ALIVE)      ,
       x_(x)              ,
       y_(y)              ,
+      inhibit_(true)     ,
       prnts_(std::make_pair(pID1 , pID2))             
       { 
       N_beings++ ;
@@ -75,20 +77,22 @@ public:
       mydna_(b0.get_dna())       ,
       age_(b0.get_age())         ,
       energy_(b0.get_energy())   ,
-      ALIVE_(b0.is_alive())     ,
+      ALIVE_(b0.is_alive())      ,
       x_(b0.get_x())             , 
       y_(b0.get_y())             ,
       prnts_(b0.get_parents())   ,
+      inhibit_(b0.inhibit_)      ,
       ID_(N_beings)  {N_beings++ ;};
 
    being(boost::optional<being> b0);
 
    being() :
-   energy_(cfg.starting_energy)      ,
+   energy_(cfg.starting_energy)  ,
    ALIVE_(true)                  ,
    x_(0.0)                       ,
    y_(0.0)                       ,
-   prnts_(std::make_pair(0,0))        ,
+   inhibit_(true)                   ,
+   prnts_(std::make_pair(0,0))   ,
    ID_(N_beings)              
    { 
        chromo ch;
@@ -100,7 +104,6 @@ public:
    };
 
    void configure(constants_wrapper const& conf);
-   unsigned seed() {return seed_ ;};
    constants_wrapper get_cfg() const { return cfg; };
    int64_t get_N_beings() const;
    int get_id() const { return ID_; };
@@ -127,7 +130,10 @@ public:
    void eat(food_point& fp);
    void die(bool force_death = false);
    void older(int n_old = 1);
-
+   void make_inhibited() { inhibit_ = true;};
+   void remove_inhibition() { inhibit_ = false;};
+   bool isInhibited() const { return inhibit_; };
+   //bool get_inhibit() { return inhibit_; };
 }; 
 
 std::ostream& operator<<(std::ostream& os, const being& obj);

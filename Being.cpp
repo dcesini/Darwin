@@ -34,6 +34,7 @@ being::being(boost::optional<being> b0) {
       x_        = b0->get_x();
       y_        = b0->get_y();
       prnts_    = b0->get_parents();
+      inhibit_  = b0->isInhibited();
       ID_       = b0->get_id();
    };
 
@@ -77,9 +78,10 @@ being operator+(const being & lhs, const being& rhs) {
 
    DNA new_dna = lhs.get_dna() + rhs.get_dna();
    uniform_real_distribution<float> distribution_x(lhs.get_x(),rhs.get_x());
-   float const new_x( distribution_x(lhs.RNG.generator) );
+   float son_distantiator = float((lhs.get_dim() + rhs.get_dim())) / 2.0;
+   float const new_x( distribution_x(lhs.RNG.generator) + son_distantiator );
    uniform_real_distribution<float> distribution_y(lhs.get_y(),rhs.get_y());
-   float new_y( distribution_y(lhs.RNG.generator) );
+   float new_y( distribution_y(lhs.RNG.generator) + son_distantiator );
    being new_being(new_dna, 0 , lhs.get_cfg().starting_energy, true, new_x, new_y, lhs.get_id(), rhs.get_id());
    return new_being;
 };
@@ -192,7 +194,11 @@ boost::optional<being> reproduce(const being& lhs, const being& rhs) {
  
    if ( are_alive(lhs,rhs) && are_close_enough(lhs,rhs) && are_compatible(lhs,rhs) ) { 
       if (VERBOSE) cout << "ID " << lhs.get_id() << " and ID " << rhs.get_id() << " were lucky, reproduction!" << endl;
-      new_being = being(lhs + rhs);
+      if (!lhs.isInhibited()) {
+         if(!rhs.isInhibited()) {
+            new_being = being(lhs + rhs);
+         }
+      }
    }
    else {
          if (false) cout << "They were not lucky, no reproduction." << endl;

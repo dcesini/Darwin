@@ -12,12 +12,19 @@ if len(sys.argv) < 3:
 
 start = int(sys.argv[1])
 end = int(sys.argv[2])
+
+X_MIN = 0
+X_MAX = 4000
+Y_MIN = 0
+Y_MAX = 4000
+
+
 #Video settings
-fps = 4
+fps = 7
 video_name = "myworld.mp4"
 start_frame = str(start) # not supported yet
 end_frame = str(end)     # not supported yet
-bit_rate = 3000000
+bit_rate = 9000000
 ######
 
 fin_root = './DATA/'
@@ -104,8 +111,8 @@ for gen in x_dict.keys():
    print "Creating frame for generation = ", gen
    plt.figure()
    plt.title("AGE = " + str(gen))
-   plt.xlim(0, 1700)
-   plt.ylim(0, 1700)
+   plt.xlim(X_MIN, X_MAX)
+   plt.ylim(Y_MIN, Y_MAX)
    #print x_dict[gen], y_dict[gen], dim_dict[gen]
    scat = plt.scatter(x_dict[gen], y_dict[gen], dim_dict[gen], c='b', marker='o')
    scat = plt.scatter(x_fp_dict[gen], y_fp_dict[gen], nutri_dict[gen] , c='r', marker='+')
@@ -115,7 +122,10 @@ for gen in x_dict.keys():
       plt.clf()
 
 print "Creating the video ..."
-os.system("avconv -y -r " + str(fps) + " -b " + str(bit_rate) + " -i DATA/%d.png " + video_name )
+cmd = "avconv -y -r " + str(fps) + " -b " + str(bit_rate) + " -i DATA/%d.png " + video_name
+print "CMD = ", cmd
+status = os.system(cmd)
+print "status = ", status
 #fig = plt.figure()
 
 #def update_plot(i):

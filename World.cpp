@@ -17,6 +17,7 @@ world::world(int64_t N_being_init, int N_food_point_init) {
 
    food_.reserve(N_food_point_init);
    creatures_.reserve( 2 * N_being_init);
+   dead_creatures_.reserve( 2 * N_being_init );
    N_generation_ = 0;
 
 };
@@ -79,6 +80,28 @@ float world::total_energy() {
    return te;
 };
 
+void world::dead_burial() {
+
+   std::vector<being> tmp_alive;
+   tmp_alive.reserve( N_alive() );
+   for(std::vector<being>::iterator b = beings_begin(); b != beings_end(); ++b){
+
+      if (b->is_alive()) 
+      {
+         tmp_alive.push_back( (*b) );
+      }
+      else
+      {
+         dead_creatures_.push_back( (*b) );
+      }
+   }
+
+   creatures_ = tmp_alive;
+
+};
+
+
+
 void world::advance_one_generation(bool dump_to_file) {
 
    std::vector<being>::iterator this_generation_beings_end = beings_end();
@@ -91,24 +114,20 @@ void world::advance_one_generation(bool dump_to_file) {
    //for(std::vector<being>::iterator lhs_b = beings_begin(); lhs_b != this_generation_beings_end; ++lhs_b){
    for(int64_t ii = 0; ii < creatures_end ; ++ii){
 
-      //lhs_b->move() ;
       creatures_[ii].move() ;
 
       for(std::vector<food_point>::iterator fp_i = food_begin(); fp_i!=this_generation_fp_end; ++fp_i){
-         //lhs_b->eat( (*fp_i) ) ; 
          creatures_[ii].eat( (*fp_i) ) ;
       };
 
    };
 
-   //for( std::vector<being>::iterator lhs_b = beings_begin(); lhs_b != this_generation_beings_end; ++lhs_b){
+   
    for( int64_t ii = 0; ii < creatures_end ; ++ii ){
-
-      //for (std::vector<being>::iterator rhs_b = lhs_b; rhs_b != this_generation_beings_end; ++rhs_b){
+      int nclose = 0;
       for ( int64_t jj = ii ; jj < creatures_end ; ++jj){
-          //if (rhs_b!=lhs_b) {
+          if (are_close_enough(creatures_[ii] , creatures_[jj])) nclose++;
           if ( ii != jj ) {
-             //boost::optional<being> new_b = reproduce( (*lhs_b) , (*rhs_b) ) ;
              boost::optional<being> new_b = reproduce( creatures_[ii] , creatures_[jj] ) ;
              if (new_b) {
                 being b2(new_b);
@@ -116,14 +135,14 @@ void world::advance_one_generation(bool dump_to_file) {
              };
           };
       };
-
-      //lhs_b->mutation() ;
+      if (nclose > 4) creatures_[ii].make_inhibited();
+      else creatures_[ii].remove_inhibition();
       creatures_[ii].mutation();
-      //lhs_b->older() ;
       creatures_[ii].older();
-      //lhs_b->die() ;
       creatures_[ii].die();
    };
+
+   dead_burial();
    
    ++N_generation_;
    std::string s = boost::lexical_cast<std::string>( N_generation_ );
@@ -172,7 +191,8 @@ void world::stats() {
    std::cout << "World Stats:" << std::endl;
    std::cout << "World Age = " << age() << std::endl;
    std::cout << "N Alive = " << N_alive() << std::endl;
-   std::cout << "N beings alive or death = " << size() << std::endl;
+   std::cout << "N beings alive or death = " << size() + N_dead() << std::endl;
+   std::cout << "N deads dead_creatures = " << N_dead() << std::endl; 
    std::cout << "Total Energy = " << total_energy() << std::endl;
    std::cout << "Total Nutrival = " << total_nutrival() << std::endl;
    std::cout << "Total Food Points = " << N_food() << std::endl;

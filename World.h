@@ -24,6 +24,7 @@ class world {
    friend class boost::serialization::access;
    std::vector<food_point> food_;
    std::vector<being>      creatures_;
+   std::vector<being>      dead_creatures_;
    int64_t N_generation_ ;
    std::string name_;
    static constants_wrapper cfg;
@@ -33,6 +34,7 @@ class world {
    {
         ar & food_;
         ar & creatures_;
+        ar & dead_creatures_;
         ar & N_generation_;
         ar & name_;
     };
@@ -40,19 +42,19 @@ class world {
    public:
 
    world(int64_t N_being_init, int N_food_point_init);
-   void configure(constants_wrapper const& conf) { cfg = conf; };
+   void configure(constants_wrapper const& conf)   { cfg = conf; };
 //   void create_food(int64_t N_food_point);
 //   void create_population(int64_t N_being);
    
-   std::vector<being>::iterator beings_begin()  { return creatures_.begin(); };
-   std::vector<being>::iterator beings_end()   { return creatures_.end(); };
-   std::vector<food_point>::iterator food_begin() { return food_.begin(); };
-   std::vector<food_point>::iterator food_end()  { return food_.end(); };
+   std::vector<being>::iterator beings_begin()     { return creatures_.begin(); };
+   std::vector<being>::iterator beings_end()       { return creatures_.end(); };
+   std::vector<food_point>::iterator food_begin()  { return food_.begin(); };
+   std::vector<food_point>::iterator food_end()    { return food_.end(); };
 
-   std::vector<being>::const_iterator beings_begin()  const { return creatures_.begin(); };
-   std::vector<being>::const_iterator beings_end() const  { return creatures_.end(); };
+   std::vector<being>::const_iterator beings_begin()  const   { return creatures_.begin(); };
+   std::vector<being>::const_iterator beings_end() const      { return creatures_.end(); };
    std::vector<food_point>::const_iterator food_begin() const { return food_.begin(); };
-   std::vector<food_point>::const_iterator food_end()  const { return food_.end(); };
+   std::vector<food_point>::const_iterator food_end()  const  { return food_.end(); };
  
 
 
@@ -69,7 +71,7 @@ class world {
 
    void advance_one_generation(bool dump_to_file = false);
    void evolve(int64_t N_generations);
-
+   void dead_burial();
    std::vector<being> creatures() { return creatures_; };
    const std::vector<food_point> food() { return food_; };
 
@@ -77,6 +79,7 @@ class world {
    int64_t size() { return creatures_.size(); } ;
    float age_avg();
    int64_t N_alive();
+   int64_t N_dead() {return dead_creatures_.size(); };
    float total_energy();
    float total_nutrival();
    int64_t N_food() { return food_.size(); };

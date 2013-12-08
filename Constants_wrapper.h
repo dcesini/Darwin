@@ -33,14 +33,14 @@ class constants_wrapper {
       float X_MAX;
       float Y_MIN;
       float Y_MAX;
-      bool READ_FOOD_FROM_FILE;
+      int READ_FOOD_FROM_FILE;
       float default_nutrival;
       int N_FOOD_POINT_AT_START;
       std::string FOOD_POINT_DISTRIBUTION; 
-      bool ENABLE_RADIACTIVE_SOURCES;
+      int ENABLE_RADIACTIVE_SOURCES;
       int N_RAD_SOURCES_AT_START;
       float default_rad;
-      bool READ_POPULATION_FROM_FILE;
+      int READ_POPULATION_FROM_FILE;
       int N_BEINGS;
       std::string BEINGS_START_DISTRIBUTION;
       std::string SOURCES_DISTRIBUTION;
@@ -65,7 +65,7 @@ class constants_wrapper {
       std::string muted_gene_selection;
       std::string food_file;
       std::string rad_file;
-      bool READ_RAD_FROM_FILE;
+      int READ_RAD_FROM_FILE;
       std::string beings_file;
       std::string world_init_file_name;
       std::string fout_name;

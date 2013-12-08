@@ -24,7 +24,8 @@ int main() {
    cfg.show();
    InitRNG RNG;
    RNG.seed(cfg.SEED);
-
+   int a(0);
+   if (!a) cout << "TRUEEEEE!!!" << endl;
    cout << endl << endl;
    cout << "X_MIN = " << cfg.X_MIN << endl;
    cout << "X_MAX = " << cfg.X_MAX << endl;
@@ -150,18 +151,39 @@ int main() {
       };
    };
 
-   if (cfg.FOOD_POINT_DISTRIBUTION == "UNIFORM") {
-      uniform_real_distribution<float> food_distribution_x(cfg.X_MIN , cfg.X_MAX);
-      uniform_real_distribution<float> food_distribution_y(cfg.Y_MIN , cfg.Y_MAX);
-      for (int i = 0; i < cfg.N_FOOD_POINT_AT_START; ++i) {
-         food_point fpx( food_distribution_x(RNG.generator) , food_distribution_y(RNG.generator) , cfg.default_nutrival );
-         myworld.add(fpx) ;
-      };
+   cout << "READ_FOOD_FROM_FILE = " << cfg.READ_FOOD_FROM_FILE << endl;
+   if (!cfg.READ_FOOD_FROM_FILE) 
+   {
+      cout << "Creating food point from scratch" << endl;
+      if (cfg.FOOD_POINT_DISTRIBUTION == "UNIFORM") {
+         uniform_real_distribution<float> food_distribution_x(cfg.X_MIN , cfg.X_MAX);
+         uniform_real_distribution<float> food_distribution_y(cfg.Y_MIN , cfg.Y_MAX);
+         for (int i = 0; i < cfg.N_FOOD_POINT_AT_START; ++i) {
+            food_point fpx( food_distribution_x(RNG.generator) , food_distribution_y(RNG.generator) , cfg.default_nutrival );
+            myworld.add(fpx) ;
+         }
+      }
+   }
+   else 
+   {
+      cout << "Reading food points from file = " << cfg.food_file << endl;
+      // create and open an archive for input
+      ifstream ifs2(cfg.food_file);
+      boost::archive::text_iarchive ia(ifs2);
+      food_point newfp;
+      // read class state from archive
+      for (int i=0; i<cfg.N_FOOD_POINT_AT_START; ++i) {
+         ia >> newfp;
+         myworld.add(newfp);
+      }
    };
-
+  
 
    myworld.stats();
+
+   //return 0;
    myworld.evolve(cfg.ITER_NUMBER);
+   cfg.save("myworld.cfg");
 /*
    // create and open a character archive for output
    ofstream ofs2("./world.txt");

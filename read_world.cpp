@@ -17,7 +17,7 @@ extern "C" {
 
    world* read_world_from_file(std::string filename) {
 
-   world* ptr = new world(1000,1000);
+   world* ptr = new world(10000,10000);
    
    std::ifstream ifs2(filename);
    boost::archive::text_iarchive ia(ifs2);
