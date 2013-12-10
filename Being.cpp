@@ -78,7 +78,7 @@ being operator+(const being & lhs, const being& rhs) {
 
    DNA new_dna = lhs.get_dna() + rhs.get_dna();
    uniform_real_distribution<float> distribution_x(lhs.get_x(),rhs.get_x());
-   float son_distantiator = float((lhs.get_dim() + rhs.get_dim())) / 2.0;
+   float son_distantiator = (lhs.get_dim() + rhs.get_dim()) / 2.0;
    float const new_x( distribution_x(lhs.RNG.generator) + son_distantiator );
    uniform_real_distribution<float> distribution_y(lhs.get_y(),rhs.get_y());
    float new_y( distribution_y(lhs.RNG.generator) + son_distantiator );
@@ -193,9 +193,9 @@ boost::optional<being> reproduce(const being& lhs, const being& rhs) {
    boost::optional<being> new_being;
  
    if ( are_alive(lhs,rhs) && are_close_enough(lhs,rhs) && are_compatible(lhs,rhs) ) { 
-      if (VERBOSE) cout << "ID " << lhs.get_id() << " and ID " << rhs.get_id() << " were lucky, reproduction!" << endl;
       if (!lhs.isInhibited()) {
          if(!rhs.isInhibited()) {
+            if (VERBOSE) cout << "ID " << lhs.get_id() << " and ID " << rhs.get_id() << " were lucky, reproduction!" << endl;
             new_being = being(lhs + rhs);
          }
       }

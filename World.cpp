@@ -126,7 +126,7 @@ void world::advance_one_generation(bool dump_to_file) {
    for( int64_t ii = 0; ii < creatures_end ; ++ii ){
       int nclose = 0;
       for ( int64_t jj = ii ; jj < creatures_end ; ++jj){
-          if (are_close_enough(creatures_[ii] , creatures_[jj])) nclose++;
+          if (are_close_enough(creatures_[ii] , creatures_[jj])) ++nclose;
           if ( ii != jj ) {
              boost::optional<being> new_b = reproduce( creatures_[ii] , creatures_[jj] ) ;
              if (new_b) {

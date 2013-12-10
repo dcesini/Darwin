@@ -140,7 +140,6 @@ int main() {
       iv.push_back(11);
    }
 
-
    if (cfg.BEINGS_START_DISTRIBUTION == "UNIFORM") {
       uniform_real_distribution<float> beings_distribution_x(cfg.X_MIN , cfg.X_MAX);
       uniform_real_distribution<float> beings_distribution_y(cfg.Y_MIN , cfg.Y_MAX);

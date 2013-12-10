@@ -10,12 +10,21 @@
 
 class InitRNG {
 public:
-    std::default_random_engine generator;
+    std::mt19937 generator;
     InitRNG() {
         generator.seed(12345);
     };
 
-    void seed(unsigned seed_) { generator.seed(seed_); };
+    void seed(unsigned seed_) { 
+       if (seed_ != 0) 
+       {
+          generator.seed(seed_); 
+       }
+       else
+       {
+          generator.seed(std::random_device());
+       }
+   }
 };
 
 #endif

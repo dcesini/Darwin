@@ -77,9 +77,9 @@ int main(int argc, char *argv[]) {
       out_fp_str << "=== End of Positions ===" << std::endl;
       outstr.close();
       out_fp_str.close();
-
-};
-
+      delete newworld;
+   };
+   
    return 0;
 };   
 
