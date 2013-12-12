@@ -22,7 +22,7 @@ public:
        }
        else
        {
-          generator.seed(std::random_device());
+          generator.seed(std::random_device()());
        }
    }
 };
