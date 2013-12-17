@@ -16,24 +16,23 @@
 #include <boost/archive/text_iarchive.hpp>
 
 
-using namespace std;
+//using namespace std;
 
 int main() {
-
    constants_wrapper cfg;
    cfg.show();
    InitRNG RNG;
    RNG.seed(cfg.SEED);
    int a(0);
-   if (!a) cout << "TRUEEEEE!!!" << endl;
-   cout << endl << endl;
-   cout << "X_MIN = " << cfg.X_MIN << endl;
-   cout << "X_MAX = " << cfg.X_MAX << endl;
-   cout << "Y_MIN = " << cfg.Y_MIN << endl;
-   cout << "Y_MAX = " << cfg.Y_MAX << endl;
+   if (!a) std::cout << "TRUEEEEE!!!" << std::endl;
+   std::cout << std::endl << std::endl;
+   std::cout << "X_MIN = " << cfg.X_MIN << std::endl;
+   std::cout << "X_MAX = " << cfg.X_MAX << std::endl;
+   std::cout << "Y_MIN = " << cfg.Y_MIN << std::endl;
+   std::cout << "Y_MAX = " << cfg.Y_MAX << std::endl;
 
-   cout << "READ_FOOD_FROM_FILE = " << cfg.READ_FOOD_FROM_FILE << endl;
-   cout << "FOOD_POINT_DISTRIBUTION = " << cfg.FOOD_POINT_DISTRIBUTION << endl;
+   std::cout << "READ_FOOD_FROM_FILE = " << cfg.READ_FOOD_FROM_FILE << std::endl;
+   std::cout << "FOOD_POINT_DISTRIBUTION = " << cfg.FOOD_POINT_DISTRIBUTION << std::endl;
 
 
    chromo beauty_d(beauty_default);
@@ -47,8 +46,8 @@ int main() {
    DNA dna2(attracted_d, beauty_d, dim_d, athlet_d, karma_d, attracted_d);
    //dna2.set_chromo(c1,5);
    if (dna1 == dna2)  {
-      cout << "TRUE1" << endl;
-   } else { cout << "qualche problema" << endl;
+      std::cout << "TRUE1" << std::endl;
+   } else { std::cout << "qualche problema" << std::endl;
      };
    
    being conf_being(dna1, 0, cfg.starting_energy, true, 1.0, 2.0, 0, 0);
@@ -64,7 +63,7 @@ int main() {
    point_2d p2(2,2);
 
    // create and open a character archive for output
-   ofstream ofs("./points.txt");
+   std::ofstream ofs("./points.txt");
    // save data to archive
     {
         boost::archive::text_oarchive oa(ofs);
@@ -87,7 +86,7 @@ int main() {
 
     {
         // create and open an archive for input
-        ifstream ifs("./points.txt");
+        std::ifstream ifs("./points.txt");
         boost::archive::text_iarchive ia(ifs);
         // read class state from archive
         ia >> p1new;
@@ -98,24 +97,24 @@ int main() {
         // archive and stream closed when destructors are called
     }
 
-   cout << "P1new = ";
+   std::cout << "P1new = ";
    p1new.show_point();
-   cout << endl;
+   std::cout << std::endl;
 
-   cout << "P2new = ";
+   std::cout << "P2new = ";
    p2new.show_point();
-   cout << endl;
+   std::cout << std::endl;
 
-   cout << "new beauty = " << new_beauty << endl;
-   cout << "newdna1 = " << dna1new << endl;
+   std::cout << "new beauty = " << new_beauty << std::endl;
+   std::cout << "newdna1 = " << dna1new << std::endl;
 
-   if (dna1 == dna1new) cout << "TRUE!" << endl;
+   if (dna1 == dna1new) std::cout << "TRUE!" << std::endl;
 
-   cout << "B1NEW = " << endl << b1new << endl;
+   std::cout << "B1NEW = " << std::endl << b1new << std::endl;
 
    world myworld(cfg.N_BEINGS,cfg.N_FOOD_POINT_AT_START);
    myworld.name("MyWorld");
-   cout << "World name = " << myworld.name() << endl;
+   std::cout << "World name = " << myworld.name() << std::endl;
    
    //myworld.add(b1);
    //myworld.add(b2);
@@ -130,19 +129,19 @@ int main() {
 //   myworld.evolve(1);
 //   myworld.stats();
 
-   vector<int> iv;
+   std::vector<int> iv;
    iv.reserve(10);
    for (int i=0; i<10; ++i) iv.push_back(i);
 
-   vector<int>::iterator iv_end = iv.end();
-   for (vector<int>::iterator it = iv.begin(); it!=iv_end; ++it) {
-      cout << *it << endl;
+   std::vector<int>::iterator iv_end = iv.end();
+   for (std::vector<int>::iterator it = iv.begin(); it!=iv_end; ++it) {
+      std::cout << *it << std::endl;
       iv.push_back(11);
    }
 
    if (cfg.BEINGS_START_DISTRIBUTION == "UNIFORM") {
-      uniform_real_distribution<float> beings_distribution_x(cfg.X_MIN , cfg.X_MAX);
-      uniform_real_distribution<float> beings_distribution_y(cfg.Y_MIN , cfg.Y_MAX);
+      std::uniform_real_distribution<float> beings_distribution_x(cfg.X_MIN , cfg.X_MAX);
+      std::uniform_real_distribution<float> beings_distribution_y(cfg.Y_MIN , cfg.Y_MAX);
       for (int i = 0; i < cfg.N_BEINGS; ++i) {
          b1.set_x(beings_distribution_x(RNG.generator));
          b1.set_y(beings_distribution_y(RNG.generator));
@@ -150,13 +149,13 @@ int main() {
       };
    };
 
-   cout << "READ_FOOD_FROM_FILE = " << cfg.READ_FOOD_FROM_FILE << endl;
+   std::cout << "READ_FOOD_FROM_FILE = " << cfg.READ_FOOD_FROM_FILE << std::endl;
    if (!cfg.READ_FOOD_FROM_FILE) 
    {
-      cout << "Creating food point from scratch" << endl;
+      std::cout << "Creating food point from scratch" << std::endl;
       if (cfg.FOOD_POINT_DISTRIBUTION == "UNIFORM") {
-         uniform_real_distribution<float> food_distribution_x(cfg.X_MIN , cfg.X_MAX);
-         uniform_real_distribution<float> food_distribution_y(cfg.Y_MIN , cfg.Y_MAX);
+         std::uniform_real_distribution<float> food_distribution_x(cfg.X_MIN , cfg.X_MAX);
+         std::uniform_real_distribution<float> food_distribution_y(cfg.Y_MIN , cfg.Y_MAX);
          for (int i = 0; i < cfg.N_FOOD_POINT_AT_START; ++i) {
             food_point fpx( food_distribution_x(RNG.generator) , food_distribution_y(RNG.generator) , cfg.default_nutrival );
             myworld.add(fpx) ;
@@ -165,9 +164,9 @@ int main() {
    }
    else 
    {
-      cout << "Reading food points from file = " << cfg.food_file << endl;
+      std::cout << "Reading food points from file = " << cfg.food_file << std::endl;
       // create and open an archive for input
-      ifstream ifs2(cfg.food_file);
+      std::ifstream ifs2(cfg.food_file);
       boost::archive::text_iarchive ia(ifs2);
       food_point newfp;
       // read class state from archive
@@ -181,11 +180,15 @@ int main() {
    myworld.stats();
 
    //return 0;
+   std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
+   start = std::chrono::high_resolution_clock::now();
    myworld.evolve(cfg.ITER_NUMBER);
+   end = std::chrono::high_resolution_clock::now();
    cfg.save("myworld.cfg");
+   std::cout << "World evolved in = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms." << std::endl;
 /*
    // create and open a character archive for output
-   ofstream ofs2("./world.txt");
+   std::ofstream ofs2("./world.txt");
    // save data to archive
     {
         boost::archive::text_oarchive oa(ofs2);
@@ -201,7 +204,7 @@ int main() {
 
     {
         // create and open an archive for input
-        ifstream ifs2("./world.txt");
+        std::ifstream ifs2("./world.txt");
         boost::archive::text_iarchive ia(ifs2);
         // read class state from archive
         ia >> newworld;

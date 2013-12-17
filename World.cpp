@@ -1,17 +1,18 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm> 
+#include <numeric> 
+#include <fstream>
+#include <chrono>
+#include <boost/optional.hpp>
+#include <boost/lexical_cast.hpp>
 #include "Commons.h"
 #include "Being.h"
 #include "Food.h"
 #include "Constants.h"
 #include "Chromo.h"
 #include "World.h"
-#include <boost/optional.hpp>
-#include <algorithm> 
-#include <numeric> 
-#include <boost/lexical_cast.hpp>
-#include <fstream>
 
 world::world(int64_t N_being_init, int N_food_point_init) {
 
@@ -112,6 +113,8 @@ void world::advance_one_generation(bool dump_to_file) {
    std::string data_path("./DATA/");
 
    //for(std::vector<being>::iterator lhs_b = beings_begin(); lhs_b != this_generation_beings_end; ++lhs_b){
+   std::cout << "Moving and feeding creatures..." << std::endl;
+   std::chrono::time_point<std::chrono::high_resolution_clock> start_mov = std::chrono::high_resolution_clock::now();
    for(int64_t ii = 0; ii < creatures_end ; ++ii){
 
       creatures_[ii].move() ;
@@ -121,8 +124,11 @@ void world::advance_one_generation(bool dump_to_file) {
       };
 
    };
-
+   std::chrono::time_point<std::chrono::high_resolution_clock> end_mov = std::chrono::high_resolution_clock::now();
+   std::cout << "Timing for move and eat = " << std::chrono::duration_cast<std::chrono::milliseconds>(end_mov - start_mov).count() << "ms." << std::endl;
    
+   std::cout << "Time to reproduce, mute and get older for  creatures..."  << std::endl;
+   std::chrono::time_point<std::chrono::high_resolution_clock> start_rep = std::chrono::high_resolution_clock::now();
    for( int64_t ii = 0; ii < creatures_end ; ++ii ){
       int nclose = 0;
       for ( int64_t jj = ii ; jj < creatures_end ; ++jj){
@@ -141,8 +147,17 @@ void world::advance_one_generation(bool dump_to_file) {
       creatures_[ii].older();
       creatures_[ii].die();
    };
+   std::chrono::time_point<std::chrono::high_resolution_clock> end_rep = std::chrono::high_resolution_clock::now();
+   std::cout << "Timing for reproduction, mutation and get older = " << std::chrono::duration_cast<std::chrono::milliseconds>(end_rep - start_rep).count() << "ms." << std::endl;
+
+
+   std::cout << "Time for dead burial (RIP)..." << std::endl;
+   std::chrono::time_point<std::chrono::high_resolution_clock> start_bur = std::chrono::high_resolution_clock::now();
 
    dead_burial();
+
+   std::chrono::time_point<std::chrono::high_resolution_clock> end_bur = std::chrono::high_resolution_clock::now();
+   std::cout << "Timing for dead burial = " << std::chrono::duration_cast<std::chrono::milliseconds>(end_bur - start_bur).count() << "ms." << std::endl;
    
    ++N_generation_;
    std::string s = boost::lexical_cast<std::string>( N_generation_ );
@@ -155,9 +170,16 @@ void world::advance_one_generation(bool dump_to_file) {
 void world::evolve(int64_t N_gen) {
    
    bool VERBOSE = true;
+   std::string gen_str;
+   std::chrono::time_point<std::chrono::high_resolution_clock> start_1gen;
+   std::chrono::time_point<std::chrono::high_resolution_clock> end_1gen;
    for (int64_t i = 0; i < N_gen; ++i) {
+      gen_str = boost::lexical_cast<std::string>( i );
       bool file_dump(true);
+      start_1gen = std::chrono::high_resolution_clock::now();
       advance_one_generation(file_dump);
+      end_1gen = std::chrono::high_resolution_clock::now();
+      std::cout << "Timing for one generation ( " << gen_str << " ) evolution = " << std::chrono::duration_cast<std::chrono::milliseconds>(end_1gen - start_1gen).count() << "ms." << std::endl;
 //      ++N_generation_;
       if (VERBOSE) stats(); 
       if ( N_alive() == 0 ) break;
@@ -191,8 +213,8 @@ void world::stats() {
    std::cout << "World Stats:" << std::endl;
    std::cout << "World Age = " << age() << std::endl;
    std::cout << "N Alive = " << N_alive() << std::endl;
-   std::cout << "N beings alive or death = " << size() + N_dead() << std::endl;
-   std::cout << "N deads dead_creatures = " << N_dead() << std::endl; 
+   std::cout << "N beings alive or dead = " << size() + N_dead() << std::endl;
+   std::cout << "N dead dead_creatures = " << N_dead() << std::endl; 
    std::cout << "Total Energy = " << total_energy() << std::endl;
    std::cout << "Total Nutrival = " << total_nutrival() << std::endl;
    std::cout << "Total Food Points = " << N_food() << std::endl;
