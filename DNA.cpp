@@ -1,6 +1,6 @@
-#include "Constants.h"
-#include "Chromo.h"
-#include "DNA.h"
+#include "include/Constants.h"
+#include "include/Chromo.h"
+#include "include/DNA.h"
 #include <iostream>
 #include <string>
 #include <sstream>

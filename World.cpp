@@ -7,12 +7,12 @@
 #include <chrono>
 #include <boost/optional.hpp>
 #include <boost/lexical_cast.hpp>
-#include "Commons.h"
-#include "Being.h"
-#include "Food.h"
-#include "Constants.h"
-#include "Chromo.h"
-#include "World.h"
+#include "include/Commons.h"
+#include "include/Being.h"
+#include "include/Food.h"
+#include "include/Constants.h"
+#include "include/Chromo.h"
+#include "include/World.h"
 
 world::world(int64_t N_being_init, int N_food_point_init) {
 

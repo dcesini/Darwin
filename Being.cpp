@@ -1,11 +1,10 @@
 #include <iostream>
-#include "Constants.h"
-#include "Constants.h"
-#include "Being.h"
-#include "Chromo.h"
-#include "DNA.h"
-#include "Commons.h"
-#include "Food.h"
+#include "include/Constants.h"
+#include "include/Being.h"
+#include "include/Chromo.h"
+#include "include/DNA.h"
+#include "include/Commons.h"
+#include "include/Food.h"
 #include <random>
 #include <chrono>
 #include <algorithm>
