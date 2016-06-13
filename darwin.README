@@ -1,11 +1,4 @@
-Darwin
-======
-
-
-
-## Synopsis
-
-Darwin is a genetic simulation software.
+Darwin is a genetic simulation software. 
 It simulates a 2D world populated by beings that move, eat, reproduce and die according to laws of life.
 
 Low of life are defined in the darwin.cfg file.
@@ -20,12 +13,10 @@ When too beings encounter they have a certain probability to reproduce mixing th
 
 The simulation should select generation of better beings given the law of lives and the characteristics of the world.
 
-## Installation
-
 To run a simulation, configure the world with darwing.cfg, make clean, make all, ./darwin.out
 
 Output is very verbose by default, to have a better output:
-./darwin.out | grep -A 10 "World Stats:"
+./darwin.out | grep -A 10 "World Stats:" 
 
 Utils directory contains utilities to inspect the output files and visualize the world.
 
@@ -38,7 +29,4 @@ SL6
 gcc 4.9.1
 boost-1.56
 
-
-## License
-
-Apache 2.0
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/boost-1.56.0/lib/

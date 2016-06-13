@@ -5,9 +5,11 @@
 
 CXX=g++
 LD=g++
-CXXFLAGS=-std=c++0x
+#CXXFLAGS=-pg -std=c++0x -I/usr/local/boost-1.56.0/include
+#CXXFLAGS_SHARED=-c -W -fpic -std=c++0x
+CXXFLAGS=-std=c++0x -fopenmp -I/usr/local/boost-1.56.0/include
 CXXFLAGS_SHARED=-c -W -fpic -std=c++0x
-LDFLAGS=-L.
+LDFLAGS=-fopenmp -L. -L/usr/local/boost-1.56.0/lib/
 LDLIBS=-lboost_serialization -lboost_program_options
 
 SRCS=Commons.cpp Food.cpp Chromo.cpp DNA.cpp Being.cpp World.cpp  Constants_wrapper.cpp Darwin.cpp

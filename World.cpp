@@ -5,6 +5,7 @@
 #include <numeric> 
 #include <fstream>
 #include <chrono>
+#include <omp.h>
 #include <boost/optional.hpp>
 #include <boost/lexical_cast.hpp>
 #include "include/Commons.h"
@@ -63,9 +64,16 @@ float sum_nutri(food_point const& lhs, food_point const& rhs) { return lhs.get_n
 float world::total_nutrival() {
 
    float tnutri = 0.0;
-   for(std::vector<food_point>::const_iterator i = food_begin(); i!= food_end(); ++i){
-      tnutri +=  i->get_nutrival();
-   };
+#pragma omp parallel for reduction(+:tnutri)
+
+//   for(std::vector<food_point>::const_iterator i = food_begin(); i!= food_end(); ++i){
+//      tnutri +=  i->get_nutrival();
+//   };
+
+     for(int64_t i = 0 ; i < world::N_food() ; ++i){
+        tnutri += food_[i].get_nutrival();
+} 
+
 //   float tnutri = accumulate( food_.begin(), food_.end(), 0.0f, sum_nutri );
    return tnutri;
 
@@ -74,10 +82,20 @@ float world::total_nutrival() {
 float world::total_energy() {
 
    float te = 0;
-   for(std::vector<being>::const_iterator i = beings_begin(); i!=beings_end(); ++i){
-      if (i->is_alive()) te += i->get_energy() ;
-   };
+#pragma omp parallel for reduction(+:te)
 
+// loop for serial execution
+//   for(std::vector<being>::const_iterator i = beings_begin(); i!=beings_end(); ++i){
+//      if (i->is_alive()) te += i->get_energy() ;
+//   };
+// end serial loop
+
+//loop for openmp
+for(int64_t i = 0 ; i < world::size(); ++i) {
+   if(creatures_[i].is_alive()) te += creatures_[i].get_energy() ;
+}
+//end loop for openmp
+//
    return te;
 };
 
@@ -115,6 +133,7 @@ void world::advance_one_generation(bool dump_to_file) {
    //for(std::vector<being>::iterator lhs_b = beings_begin(); lhs_b != this_generation_beings_end; ++lhs_b){
    std::cout << "Moving and feeding creatures..." << std::endl;
    std::chrono::time_point<std::chrono::high_resolution_clock> start_mov = std::chrono::high_resolution_clock::now();
+#pragma omp parallel for
    for(int64_t ii = 0; ii < creatures_end ; ++ii){
 
       creatures_[ii].move() ;
@@ -129,15 +148,19 @@ void world::advance_one_generation(bool dump_to_file) {
    
    std::cout << "Time to reproduce, mute and get older for  creatures..."  << std::endl;
    std::chrono::time_point<std::chrono::high_resolution_clock> start_rep = std::chrono::high_resolution_clock::now();
+#pragma omp parallel for
    for( int64_t ii = 0; ii < creatures_end ; ++ii ){
       int nclose = 0;
       for ( int64_t jj = ii ; jj < creatures_end ; ++jj){
           if (are_close_enough(creatures_[ii] , creatures_[jj])) ++nclose;
           if ( ii != jj ) {
+#pragma omp critical
+{
              boost::optional<being> new_b = reproduce( creatures_[ii] , creatures_[jj] ) ;
              if (new_b) {
                 being b2(new_b);
                 add(b2); 
+}
              };
           };
       };
